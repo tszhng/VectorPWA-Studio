@@ -1,0 +1,2394 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VectorPWA Studio</title>
+<meta name="theme-color" content="#1e1e1e">
+<style>
+:root{
+  --bg:#1e1e1e;--panel:#252525;--panel2:#2d2d2d;--panel3:#333;
+  --border:#3a3a3a;--text:#cfcfcf;--dim:#8a8a8a;
+  --accent:#ff9a00;--accent-dim:#8a5500;
+  --stage:#3c3c3c;--ruler-bg:#2a2a2a;--guide:#4aa8ff;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei","Noto Sans TC",sans-serif;
+  font-size:12px;background:var(--bg);color:var(--text);overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+button{font-family:inherit;font-size:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:inherit}
+
+#app{display:grid;grid-template-rows:42px 1fr;height:100vh;height:100dvh}
+#main{display:grid;grid-template-columns:46px 1fr 272px;min-height:0}
+
+/* topbar */
+#topbar{display:flex;align-items:center;gap:14px;padding:0 12px;background:var(--panel);border-bottom:1px solid var(--border);flex:none}
+.brand{display:flex;align-items:center;gap:8px;font-weight:600;letter-spacing:.3px;color:#e8e8e8}
+.brand svg{width:20px;height:20px}
+.menu{display:flex;gap:2px}
+.menu button{padding:6px 12px;border-radius:4px;color:#b8b8b8;transition:.15s}
+.menu button:hover{background:var(--panel3);color:#fff}
+.spacer{flex:1}
+.zoom-ctrl{display:flex;align-items:center;gap:4px;color:var(--dim)}
+.zoom-ctrl button{width:26px;height:24px;border-radius:4px;background:var(--panel2);display:grid;place-items:center;color:#ccc}
+.zoom-ctrl button:hover{background:#3d3d3d;color:#fff}
+.zoom-ctrl button.wide{width:auto;padding:0 10px}
+#zoomLabel{min-width:48px;text-align:center;font-variant-numeric:tabular-nums}
+
+/* tools */
+#tools{background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;overflow-y:auto;overflow-x:visible;position:relative}
+.tool{width:34px;height:34px;border-radius:5px;display:grid;place-items:center;color:#a8a8a8;position:relative;transition:.12s;flex:none}
+.tool:hover{background:var(--panel3);color:#e8e8e8}
+.tool.active{background:var(--panel3);color:var(--accent)}
+.tool.active::before{content:"";position:absolute;left:-6px;top:50%;transform:translateY(-50%);width:3px;height:18px;background:var(--accent);border-radius:0 2px 2px 0}
+.tool svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.tool.arrow-direct svg{stroke:#fff;fill:none}
+.tool::after{
+  content:attr(data-tip);position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);
+  background:#111;color:#eee;padding:5px 10px;border-radius:4px;font-size:11px;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .12s .35s;z-index:1000;
+  border:1px solid #444;box-shadow:0 2px 8px rgba(0,0,0,.5);
+}
+.tool:hover::after{opacity:1}
+.tool-sep{width:24px;height:1px;background:var(--border);margin:6px 0;flex:none}
+
+/* color swatches (bottom of tools) */
+.color-swatches{margin-top:auto;padding-top:14px;display:flex;flex-direction:column;align-items:center;flex:none}
+.swatch-wrap{position:relative;width:38px;height:38px}
+.fill-swatch,.stroke-swatch{position:absolute;border-radius:4px;cursor:pointer;border:1.5px solid #666;transition:transform .1s;overflow:hidden;background:#fff}
+.fill-swatch{width:22px;height:22px;left:0;top:0;z-index:2}
+.stroke-swatch{width:20px;height:20px;right:0;bottom:0;z-index:1}
+.stroke-swatch .stroke-hole{position:absolute;inset:4px;border-radius:2px;background:var(--panel);z-index:2}
+.stroke-swatch .stroke-fill{position:absolute;inset:0;border-radius:3px}
+.fill-swatch:hover,.stroke-swatch:hover{transform:scale(1.1);z-index:5}
+
+/* stage */
+#stage{position:relative;overflow:hidden;background:var(--stage);min-width:0;min-height:0}
+#rulerH{position:absolute;left:20px;top:0;right:0;height:20px;background:var(--ruler-bg);border-bottom:1px solid var(--border);cursor:ns-resize;z-index:10}
+#rulerV{position:absolute;left:0;top:20px;bottom:0;width:20px;background:var(--ruler-bg);border-right:1px solid var(--border);cursor:ew-resize;z-index:10}
+#rulerCorner{position:absolute;left:0;top:0;width:20px;height:20px;background:var(--ruler-bg);border-right:1px solid var(--border);border-bottom:1px solid var(--border);z-index:11;display:grid;place-items:center;font-size:9px;color:#666}
+#viewport{position:absolute;left:20px;top:20px;right:0;bottom:0;overflow:hidden;touch-action:none}
+#world{position:absolute;inset:0;width:100%;height:100%;display:block}
+#hint{position:absolute;left:14px;bottom:12px;padding:5px 10px;border-radius:5px;background:rgba(0,0,0,.6);color:#bbb;font-size:11px;pointer-events:none;backdrop-filter:blur(4px);white-space:nowrap;z-index:20}
+
+/* panels */
+#side{background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.section{border-bottom:1px solid var(--border);display:flex;flex-direction:column;min-height:0;flex:none}
+.section.grow{flex:1;min-height:0}
+.section-head{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;font-size:10.5px;letter-spacing:1px;color:#9a9a9a;text-transform:uppercase;background:var(--panel2);flex:none;user-select:none;cursor:pointer}
+.section-head .caret{transition:transform .15s;flex:none;margin-left:6px}
+.section.collapsed .section-head .caret{transform:rotate(-90deg)}
+.section.collapsed .section-body{display:none}
+.section-body{padding:9px 12px;overflow-y:auto}
+.section.grow .section-body{flex:1;min-height:0;display:flex;flex-direction:column}
+
+.row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.row:last-child{margin-bottom:0}
+.row>label{width:54px;flex:none;color:var(--dim);font-size:11px}
+.grid2{display:grid;grid-template-columns:54px 1fr 54px 1fr;gap:6px;align-items:center;margin-bottom:8px}
+.grid2 label{color:var(--dim);font-size:11px}
+input[type=number],input[type=text],select{width:100%;background:#1a1a1a;border:1px solid var(--border);border-radius:4px;color:var(--text);padding:4px 6px;outline:none;min-width:0}
+input[type=number]:focus,input[type=text]:focus,select:focus{border-color:var(--accent)}
+input[type=number]{font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent)}
+input[type=color]{width:26px;height:22px;padding:0;border:1px solid var(--border);border-radius:4px;background:none;cursor:pointer;flex:none}
+.mini{padding:4px 9px;border-radius:4px;background:var(--panel3);color:#bbb;font-size:11px;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:4px;transition:.1s}
+.mini:hover{background:#424242;color:#fff}
+.mini.on{background:var(--accent-dim);color:#ffce80}
+.mini:disabled{opacity:.35;cursor:not-allowed}
+
+/* artboards */
+#artboardList{list-style:none;margin:0;padding:0}
+.ab-item{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-size:11.5px;margin-bottom:2px}
+.ab-item:hover{background:var(--panel2)}
+.ab-item.active{background:#33383d;color:#fff}
+.ab-item.active::before{content:"";width:3px;height:14px;background:var(--accent);border-radius:2px}
+.ab-item .ab-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ab-item .ab-size{font-size:10px;color:#777;font-variant-numeric:tabular-nums}
+
+/* align */
+.align-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;margin-bottom:8px}
+.align-btn{height:30px;border-radius:4px;background:var(--panel3);display:grid;place-items:center;color:#aaa;transition:.1s}
+.align-btn:hover:not(:disabled){background:#424242;color:#fff}
+.align-btn:disabled{opacity:.35;cursor:not-allowed}
+.align-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.dist-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.dist-btn{height:28px;border-radius:4px;background:var(--panel3);display:grid;place-items:center;color:#aaa;font-size:11px;transition:.1s}
+.dist-btn:hover:not(:disabled){background:#424242;color:#fff}
+.dist-btn:disabled{opacity:.35;cursor:not-allowed}
+
+/* pathfinder */
+.pf-row{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.pf-btn{height:36px;border-radius:4px;background:var(--panel3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#aaa;font-size:9.5px;transition:.1s;padding:2px}
+.pf-btn:hover:not(:disabled){background:#424242;color:#fff}
+.pf-btn:disabled{opacity:.35;cursor:not-allowed}
+.pf-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.6}
+.pf-btn.primary{background:var(--accent-dim);color:#ffce80}
+.pf-btn.primary:hover:not(:disabled){background:#a86a00;color:#ffe0a3}
+
+/* layers */
+#layerList{list-style:none;margin:0;padding:2px 0;flex:1;overflow-y:auto;min-height:0}
+.layer-item{display:flex;align-items:center;gap:6px;padding:4px 10px;cursor:pointer;border-left:3px solid transparent;font-size:11.5px}
+.layer-item:hover{background:var(--panel2)}
+.layer-item.selected{background:#33383d;border-left-color:var(--accent)}
+.layer-item .ico{width:18px;height:18px;display:grid;place-items:center;color:#7d7d7d;flex:none;border-radius:3px}
+.layer-item .ico:hover{background:#444;color:#ccc}
+.layer-item .ico.off{color:#4a4a4a}
+.layer-item .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#c4c4c4}
+.layer-item.selected .name{color:#fff}
+.layer-item .type{font-size:10px;color:#666;flex:none}
+.layer-tools{display:flex;gap:4px;padding:7px 10px;border-top:1px solid var(--border);flex:none}
+
+/* swatch popup */
+.swatch-popup{position:fixed;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:9999;display:none;width:196px}
+.swatch-popup.open{display:block}
+.swatch-popup .swatch-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px}
+.swatch-popup .swatch-item{width:100%;aspect-ratio:1;border-radius:3px;border:1px solid rgba(255,255,255,.12);cursor:pointer;position:relative}
+.swatch-popup .swatch-item:hover{transform:scale(1.15)}
+.swatch-popup .swatch-item.none{background:#fff}
+.swatch-popup .swatch-item.none::after{content:"";position:absolute;left:0;top:50%;width:100%;height:1.5px;background:#e33;transform:translateY(-50%) rotate(-45deg)}
+.swatch-popup .custom-row{display:flex;align-items:center;gap:6px;padding-top:6px;border-top:1px solid var(--border)}
+.swatch-popup .custom-row label{flex:1;color:var(--dim);font-size:11px}
+
+/* text editor */
+.text-editor{position:fixed;z-index:9998;background:rgba(255,255,255,.02);border:1px dashed var(--accent);outline:none;resize:none;padding:0;line-height:1.2;overflow:hidden;white-space:pre;color:#000;font-family:sans-serif;box-shadow:0 0 0 3px rgba(255,154,0,.12)}
+
+#toast{position:fixed;left:50%;bottom:36px;transform:translate(-50%,20px);background:#111;color:#eee;padding:9px 18px;border-radius:6px;border:1px solid #3a3a3a;opacity:0;pointer-events:none;transition:.25s;z-index:99999;font-size:12px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#4a4a4a;border-radius:5px;border:2px solid var(--panel)}
+::-webkit-scrollbar-thumb:hover{background:#5e5e5e}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ff9a00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 20 L12 4 L20 20"/><path d="M7.5 14 h9"/>
+      </svg>
+      <span>VectorPWA Studio</span>
+    </div>
+    <div class="menu">
+      <button data-act="new">新建</button>
+      <button data-act="svg">匯出 SVG</button>
+      <button data-act="pdf">匯出 PDF</button>
+    </div>
+    <div class="spacer"></div>
+    <div class="zoom-ctrl">
+      <button data-zoom="out" title="縮小 (Ctrl -)">−</button>
+      <span id="zoomLabel">100%</span>
+      <button data-zoom="in" title="放大 (Ctrl +)">+</button>
+      <button class="wide" data-zoom="fit" title="符合視窗">符合</button>
+      <button class="wide" data-zoom="100" title="實際大小">1:1</button>
+    </div>
+  </header>
+
+  <div id="main">
+    <aside id="tools">
+      <button class="tool active" data-tool="select" data-tip="選取工具 (V)">
+        <svg viewBox="0 0 24 24"><path d="M5 3 L5 20 L9.5 15.5 L12.5 21.5 L15 20.3 L12.1 14.6 L18.5 14.4 Z"/></svg>
+      </button>
+      <button class="tool arrow-direct" data-tool="direct" data-tip="直接選取工具 (A)">
+        <svg viewBox="0 0 24 24"><path d="M5 3 L5 20 L9.5 15.5 L12.5 21.5 L15 20.3 L12.1 14.6 L18.5 14.4 Z"/></svg>
+      </button>
+      <button class="tool" data-tool="artboard" data-tip="工作區域工具 (Shift+O)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </button>
+      <div class="tool-sep"></div>
+      <button class="tool" data-tool="rect" data-tip="矩形工具 (R)">
+        <svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="1"/></svg>
+      </button>
+      <button class="tool" data-tool="ellipse" data-tip="橢圓工具 (O)">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/></svg>
+      </button>
+      <button class="tool" data-tool="line" data-tip="線段工具 (L)">
+        <svg viewBox="0 0 24 24"><path d="M4 19 L20 5"/></svg>
+      </button>
+      <button class="tool" data-tool="pen" data-tip="鋼筆工具 (P)">
+        <svg viewBox="0 0 24 24"><path d="M12 3 L17 13 L12 21 L7 13 Z"/><path d="M12 9.5 L12 13"/></svg>
+      </button>
+      <button class="tool" data-tool="text" data-tip="文字工具 (T)">
+        <svg viewBox="0 0 24 24"><path d="M5 6 L19 6"/><path d="M12 6 L12 19"/><path d="M9 19 L15 19"/></svg>
+      </button>
+      <div class="tool-sep"></div>
+      <button class="tool" data-tool="hand" data-tip="平移工具 (H / 空白鍵)">
+        <svg viewBox="0 0 24 24"><path d="M8 12V5.5a1.5 1.5 0 0 1 3 0V11m0-5.5a1.5 1.5 0 0 1 3 0V11m0-4a1.5 1.5 0 0 1 3 0v6.5m0-3a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6v-1.5a1.5 1.5 0 0 1 3 0"/></svg>
+      </button>
+
+      <div class="color-swatches">
+        <div class="swatch-wrap">
+          <div class="fill-swatch" id="fillSwatch" title="填色 (X 切換)"></div>
+          <div class="stroke-swatch" id="strokeSwatch" title="描邊 (X 切換)">
+            <div class="stroke-fill"></div>
+            <div class="stroke-hole"></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <section id="stage">
+      <canvas id="rulerH"></canvas>
+      <canvas id="rulerV"></canvas>
+      <div id="rulerCorner">mm</div>
+      <div id="viewport">
+        <svg id="world" xmlns="http://www.w3.org/2000/svg">
+          <g id="worldInner">
+            <g id="artboardsLayer"></g>
+            <g id="guidesLayer"></g>
+            <g id="contentLayer"></g>
+            <g id="overlayLayer"></g>
+          </g>
+        </svg>
+      </div>
+      <div id="hint"></div>
+    </section>
+
+    <aside id="side">
+      <!-- 工作區域 -->
+      <div class="section" data-section="artboards">
+        <div class="section-head"><span>工作區域</span><svg class="caret" width="10" height="10" viewBox="0 0 10 10"><path d="M2 4 L5 7 L8 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <div class="section-body">
+          <ul id="artboardList"></ul>
+          <div style="display:flex;gap:4px;margin-top:6px">
+            <button class="mini" id="btnNewArtboard">+ 新增</button>
+            <button class="mini" id="btnDelArtboard">刪除</button>
+          </div>
+          <div style="display:flex;gap:4px;margin-top:6px">
+            <button class="mini" id="btnClearGuides">清除參考線</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 屬性 -->
+      <div class="section" data-section="props">
+        <div class="section-head"><span>屬性</span><svg class="caret" width="10" height="10" viewBox="0 0 10 10"><path d="M2 4 L5 7 L8 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <div class="section-body">
+          <div class="grid2">
+            <label>X</label><input type="number" id="pX" step="0.1">
+            <label>Y</label><input type="number" id="pY" step="0.1">
+            <label>W</label><input type="number" id="pW" step="0.1" min="0">
+            <label>H</label><input type="number" id="pH" step="0.1" min="0">
+          </div>
+          <div class="row"><label>旋轉°</label><input type="number" id="pR" step="1"></div>
+          <div class="row"><label>填色</label><input type="color" id="pFill" value="#4A90D9"><button class="mini" id="pFillNone">無</button></div>
+          <div class="row"><label>描邊</label><input type="color" id="pStroke" value="#1A1A1A"><button class="mini" id="pStrokeNone">無</button></div>
+          <div class="row"><label>線寬 mm</label><input type="number" id="pStrokeW" step="0.05" min="0" value="0.4"></div>
+          <div class="row"><label>不透明</label><input type="range" id="pOpacity" min="0" max="100" value="100"></div>
+          <div class="row" id="rowFontSize" style="display:none"><label>字級 mm</label><input type="number" id="pFontSize" step="0.5" min="1" value="12"></div>
+        </div>
+      </div>
+
+      <!-- 對齊 -->
+      <div class="section" data-section="align">
+        <div class="section-head"><span>對齊</span><svg class="caret" width="10" height="10" viewBox="0 0 10 10"><path d="M2 4 L5 7 L8 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <div class="section-body">
+          <div class="align-grid">
+            <button class="align-btn" data-align="left" title="水平靠左"><svg viewBox="0 0 24 24"><path d="M4 4 V20"/><rect x="7" y="7" width="9" height="4" rx="1"/><rect x="7" y="14" width="6" height="4" rx="1"/></svg></button>
+            <button class="align-btn" data-align="hcenter" title="水平置中"><svg viewBox="0 0 24 24"><path d="M12 4 V20"/><rect x="7" y="7" width="10" height="4" rx="1"/><rect x="9" y="14" width="6" height="4" rx="1"/></svg></button>
+            <button class="align-btn" data-align="right" title="水平靠右"><svg viewBox="0 0 24 24"><path d="M20 4 V20"/><rect x="8" y="7" width="9" height="4" rx="1"/><rect x="11" y="14" width="6" height="4" rx="1"/></svg></button>
+            <button class="align-btn" data-align="top" title="垂直靠上"><svg viewBox="0 0 24 24"><path d="M4 4 H20"/><rect x="7" y="7" width="4" height="9" rx="1"/><rect x="14" y="7" width="4" height="6" rx="1"/></svg></button>
+            <button class="align-btn" data-align="vcenter" title="垂直置中"><svg viewBox="0 0 24 24"><path d="M4 12 H20"/><rect x="7" y="7" width="4" height="10" rx="1"/><rect x="14" y="9" width="4" height="6" rx="1"/></svg></button>
+            <button class="align-btn" data-align="bottom" title="垂直靠下"><svg viewBox="0 0 24 24"><path d="M4 20 H20"/><rect x="7" y="8" width="4" height="9" rx="1"/><rect x="14" y="11" width="4" height="6" rx="1"/></svg></button>
+          </div>
+          <div class="dist-grid">
+            <button class="dist-btn" data-dist="h" title="水平均分（中心）">水平均分</button>
+            <button class="dist-btn" data-dist="v" title="垂直均分（中心）">垂直均分</button>
+            <button class="dist-btn" data-dist="h-edge" title="水平均分（邊緣）">水平間距</button>
+            <button class="dist-btn" data-dist="v-edge" title="垂直均分（邊緣）">垂直間距</button>
+          </div>
+          <div style="display:flex;gap:4px;margin-top:8px;align-items:center">
+            <label style="font-size:11px;color:var(--dim);flex:none">間距 mm</label>
+            <input type="number" id="gapInput" value="5" step="0.5" min="0" style="width:60px">
+            <button class="mini" id="btnApplyGap" style="flex:1">均分間距</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 路徑尋找器 -->
+      <div class="section" data-section="pathfinder">
+        <div class="section-head"><span>路徑尋找器</span><svg class="caret" width="10" height="10" viewBox="0 0 10 10"><path d="M2 4 L5 7 L8 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <div class="section-body">
+          <div class="pf-row">
+            <button class="pf-btn primary" id="pfUnite" title="聯集：合併多個物件為單一外形"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="12" height="12" rx="1"/><rect x="9" y="9" width="12" height="12" rx="1"/></svg>聯集</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 圖層 -->
+      <div class="section grow" data-section="layers">
+        <div class="section-head"><span>圖層</span><span id="layerCount" style="font-size:10px;letter-spacing:0">0</span></div>
+        <div class="section-body" style="padding:0;overflow:hidden;display:flex;flex-direction:column">
+          <ul id="layerList"></ul>
+          <div class="layer-tools">
+            <button class="mini" id="btnUp" title="上移一層">上移</button>
+            <button class="mini" id="btnDown" title="下移一層">下移</button>
+            <button class="mini" id="btnDup" title="複製 (Ctrl+D)">複製</button>
+            <button class="mini" id="btnDel" title="刪除 (Del)">刪除</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="swatch-popup" id="swatchPopup"></div>
+<div id="toast"></div>
+
+<script>
+"use strict";
+(() => {
+
+/* ══════════════════════════════════════════════════════════
+   工具函式
+   ══════════════════════════════════════════════════════════ */
+const NS = "http://www.w3.org/2000/svg";
+const MM2PT = 72 / 25.4;
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const n = v => Math.round(v * 1000) / 1000;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+
+function svgEl(tag, attrs, parent) {
+  const el = document.createElementNS(NS, tag);
+  if (attrs) for (const k in attrs) if (attrs[k] !== undefined && attrs[k] !== null) el.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(el);
+  return el;
+}
+function escapeXML(s) {
+  return String(s).replace(/[<>&"']/g, c => ({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;","'":"&apos;"}[c]));
+}
+function hexToRgb(hex) {
+  let h = String(hex || "#000").replace("#", "");
+  if (h.length === 3) h = h.split("").map(c => c + c).join("");
+  const num = parseInt(h, 16) || 0;
+  return [(num >> 16 & 255) / 255, (num >> 8 & 255) / 255, (num & 255) / 255];
+}
+let uidSeed = 0;
+const uid = () => "o" + (++uidSeed);
+let toastTimer = null;
+function toast(msg) {
+  const el = $("#toast");
+  el.textContent = msg; el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2200);
+}
+
+/* ══════════════════════════════════════════════════════════
+   狀態
+   ══════════════════════════════════════════════════════════ */
+const state = {
+  tool: "select",
+  zoom: 1, panX: 0, panY: 0,
+  doc: {
+    name: "未命名",
+    artboards: [],
+    activeArtboard: null,
+    objects: [],
+    guides: { horizontal: [], vertical: [] }
+  },
+  selection: new Set(),
+  direct: { objectId: null, anchorIndex: -1, handleType: null },
+  style: { fill: "#4A90D9", stroke: "#1A1A1A", strokeWidth: 0.4, fontSize: 12, fontFamily: "sans-serif" }
+};
+
+const canvas = $("#world");
+const worldInner = $("#worldInner");
+const artboardsLayer = $("#artboardsLayer");
+const guidesLayer = $("#guidesLayer");
+const contentLayer = $("#contentLayer");
+const overlayLayer = $("#overlayLayer");
+const viewport = $("#viewport");
+const rulerH = $("#rulerH");
+const rulerV = $("#rulerV");
+
+let drag = null;
+let pen = null;
+let mouseDoc = { x: 0, y: 0 };
+let spaceDown = false;
+let resizeTimer = null;
+
+/* ══════════════════════════════════════════════════════════
+   工作區域輔助
+   ══════════════════════════════════════════════════════════ */
+function getActiveArtboard() {
+  return state.doc.artboards.find(a => a.id === state.doc.activeArtboard) || state.doc.artboards[0] || null;
+}
+function makeArtboard(name, x, y, w, h) {
+  return { id: "ab" + (++uidSeed), name, x, y, w, h };
+}
+
+/* ══════════════════════════════════════════════════════════
+   幾何
+   ══════════════════════════════════════════════════════════ */
+function updateBBox(o) {
+  if (o.type === "line") {
+    o.x = Math.min(o.x1, o.x2); o.y = Math.min(o.y1, o.y2);
+    o.w = Math.abs(o.x2 - o.x1); o.h = Math.abs(o.y2 - o.y1);
+  } else if (o.type === "path") {
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (const p of o.points) {
+      minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x);
+      minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y);
+    }
+    if (minX === Infinity) { minX = minY = maxX = maxY = 0; }
+    o.x = minX; o.y = minY; o.w = maxX - minX; o.h = maxY - minY;
+  } else if (o.type === "text") {
+    o.w = measureText(o.text, o.fontSize);
+    o.h = o.fontSize * 1.25;
+  }
+  return o;
+}
+function measureText(text, fs) {
+  let w = 0;
+  for (const ch of String(text)) w += /[\u2e80-\u9fff\uf900-\ufaff\uff00-\uffef]/.test(ch) ? fs : fs * 0.55;
+  return Math.max(w, fs * 0.5);
+}
+function pathToD(points, closed) {
+  if (!points || !points.length) return "";
+  let d = `M ${n(points[0].x)} ${n(points[0].y)}`;
+  const len = points.length;
+  const end = closed ? len : len - 1;
+  for (let i = 0; i < end; i++) {
+    const a = points[i], b = points[(i + 1) % len];
+    if (a.hOut || b.hIn) {
+      const c1 = a.hOut || a, c2 = b.hIn || b;
+      d += ` C ${n(c1.x)} ${n(c1.y)} ${n(c2.x)} ${n(c2.y)} ${n(b.x)} ${n(b.y)}`;
+    } else d += ` L ${n(b.x)} ${n(b.y)}`;
+  }
+  if (closed) d += " Z";
+  return d;
+}
+function findObj(id) { return state.doc.objects.find(o => o.id === id) || null; }
+function selectedObjs() { return Array.from(state.selection).map(findObj).filter(Boolean); }
+function unionBBox(objs) {
+  if (!objs.length) return null;
+  let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
+  for (const o of objs) {
+    x1 = Math.min(x1, o.x); y1 = Math.min(y1, o.y);
+    x2 = Math.max(x2, o.x + o.w); y2 = Math.max(y2, o.y + o.h);
+  }
+  return { x: x1, y: y1, w: x2 - x1, h: y2 - y1 };
+}
+function toDoc(e) {
+  const r = viewport.getBoundingClientRect();
+  return { x: (e.clientX - r.left - state.panX) / state.zoom, y: (e.clientY - r.top - state.panY) / state.zoom };
+}
+function toScreen(p) {
+  const r = viewport.getBoundingClientRect();
+  return { x: p.x * state.zoom + state.panX + r.left, y: p.y * state.zoom + state.panY + r.top };
+}
+
+/* ══════════════════════════════════════════════════════════
+   歷史
+   ══════════════════════════════════════════════════════════ */
+const history = { stack: [], index: -1 };
+function snapshot() {
+  return JSON.stringify({
+    artboards: state.doc.artboards,
+    activeArtboard: state.doc.activeArtboard,
+    objects: state.doc.objects,
+    guides: state.doc.guides
+  });
+}
+function pushHistory() {
+  history.stack = history.stack.slice(0, history.index + 1);
+  history.stack.push(snapshot());
+  if (history.stack.length > 80) history.stack.shift();
+  history.index = history.stack.length - 1;
+}
+function restoreHistory(json) {
+  const d = JSON.parse(json);
+  state.doc.artboards = d.artboards;
+  state.doc.activeArtboard = d.activeArtboard;
+  state.doc.objects = d.objects;
+  state.doc.guides = d.guides;
+  const valid = new Set(state.doc.objects.map(o => o.id));
+  for (const id of Array.from(state.selection)) if (!valid.has(id)) state.selection.delete(id);
+  if (state.direct.objectId && !valid.has(state.direct.objectId)) state.direct = { objectId: null, anchorIndex: -1, handleType: null };
+  render();
+}
+function undo() { if (history.index > 0) { history.index--; restoreHistory(history.stack[history.index]); } }
+function redo() { if (history.index < history.stack.length - 1) { history.index++; restoreHistory(history.stack[history.index]); } }
+
+/* ══════════════════════════════════════════════════════════
+   物件工廠
+   ══════════════════════════════════════════════════════════ */
+function baseObj(type, name) {
+  return {
+    id: uid(), type, name: name || type,
+    x: 0, y: 0, w: 0, h: 0, rotation: 0, opacity: 1,
+    visible: true, locked: false,
+    fill: state.style.fill, stroke: state.style.stroke, strokeWidth: state.style.strokeWidth
+  };
+}
+function makeShape(type, a, b) {
+  const x = Math.min(a.x, b.x), y = Math.min(a.y, b.y);
+  const w = Math.abs(a.x - b.x), h = Math.abs(a.y - b.y);
+  const o = baseObj(type, { rect: "矩形", ellipse: "橢圓", line: "線段" }[type]);
+  Object.assign(o, { x, y, w, h });
+  if (type === "line") { Object.assign(o, { x1: a.x, y1: a.y, x2: b.x, y2: b.y, fill: "none" }); updateBBox(o); }
+  return o;
+}
+
+/* ══════════════════════════════════════════════════════════
+   渲染
+   ══════════════════════════════════════════════════════════ */
+function render() {
+  const z = state.zoom;
+  worldInner.setAttribute("transform", `translate(${state.panX} ${state.panY}) scale(${z})`);
+
+  // 工作區域
+  artboardsLayer.innerHTML = "";
+  for (const ab of state.doc.artboards) {
+    const isActive = ab.id === state.doc.activeArtboard;
+    svgEl("rect", {
+      x: ab.x, y: ab.y, width: ab.w, height: ab.h,
+      fill: "#ffffff",
+      stroke: isActive ? "#ff9a00" : "#7a7a7a",
+      "stroke-width": (isActive ? 1.5 : 0.8) / z,
+      "data-ab": ab.id,
+      style: "pointer-events:all;cursor:default"
+    }, artboardsLayer);
+  }
+
+  // 參考線
+  guidesLayer.innerHTML = "";
+  const gz = 1 / z;
+  for (const g of state.doc.guides.horizontal) {
+    svgEl("line", {
+      x1: -100000, y1: g.y, x2: 100000, y2: g.y,
+      stroke: "#4aa8ff", "stroke-width": gz, "stroke-dasharray": `${4 * gz} ${3 * gz}`,
+      "data-guide": "h:" + g.id, style: "pointer-events:stroke;cursor:ns-resize"
+    }, guidesLayer);
+  }
+  for (const g of state.doc.guides.vertical) {
+    svgEl("line", {
+      x1: g.x, y1: -100000, x2: g.x, y2: 100000,
+      stroke: "#4aa8ff", "stroke-width": gz, "stroke-dasharray": `${4 * gz} ${3 * gz}`,
+      "data-guide": "v:" + g.id, style: "pointer-events:stroke;cursor:ew-resize"
+    }, guidesLayer);
+  }
+
+  // 內容
+  contentLayer.innerHTML = "";
+  for (const o of state.doc.objects) {
+    if (!o.visible) continue;
+    contentLayer.appendChild(renderObject(o));
+  }
+
+  // 覆蓋層
+  overlayLayer.innerHTML = "";
+  renderOverlay();
+
+  // 面板
+  renderArtboardPanel();
+  renderLayerPanel();
+  renderProperties();
+  renderAlignmentButtons();
+  drawRulers();
+  updateHint();
+  $("#zoomLabel").textContent = Math.round(z * 100) + "%";
+}
+
+function createShapeEl(o) {
+  switch (o.type) {
+    case "rect": return svgEl("rect", { x: n(o.x), y: n(o.y), width: n(Math.max(o.w, 0)), height: n(Math.max(o.h, 0)) });
+    case "ellipse": return svgEl("ellipse", { cx: n(o.x + o.w / 2), cy: n(o.y + o.h / 2), rx: n(Math.max(o.w / 2, 0)), ry: n(Math.max(o.h / 2, 0)) });
+    case "line": return svgEl("line", { x1: n(o.x1), y1: n(o.y1), x2: n(o.x2), y2: n(o.y2) });
+    case "path": return svgEl("path", { d: pathToD(o.points, o.closed) });
+    case "text": {
+      const t = svgEl("text", { x: n(o.x), y: n(o.y + o.fontSize * 0.82), "font-size": n(o.fontSize), "font-family": o.fontFamily });
+      t.textContent = o.text;
+      return t;
+    }
+  }
+  return null;
+}
+function renderObject(o) {
+  const g = svgEl("g", { "data-id": o.id });
+  if (o.rotation) g.setAttribute("transform", `rotate(${o.rotation} ${n(o.x + o.w / 2)} ${n(o.y + o.h / 2)})`);
+  if (o.opacity !== 1) g.setAttribute("opacity", o.opacity);
+  const el = createShapeEl(o);
+  if (!el) return g;
+  const isLine = o.type === "line";
+  el.setAttribute("fill", isLine ? "none" : (o.fill || "none"));
+  el.setAttribute("stroke", o.stroke || "none");
+  el.setAttribute("stroke-width", o.strokeWidth || 0);
+  el.setAttribute("stroke-linejoin", "round");
+  el.setAttribute("stroke-linecap", "round");
+  g.appendChild(el);
+  // 細線熱區
+  if (isLine || !o.fill || o.fill === "none" || o.type === "path" || o.type === "text") {
+    const hit = createShapeEl(o);
+    hit.setAttribute("fill", "none");
+    hit.setAttribute("stroke", "#000");
+    hit.setAttribute("stroke-opacity", "0");
+    hit.setAttribute("stroke-width", Math.max(o.strokeWidth || 0, 8 / state.zoom));
+    hit.setAttribute("stroke-linecap", "round");
+    hit.setAttribute("stroke-linejoin", "round");
+    hit.setAttribute("pointer-events", "stroke");
+    g.appendChild(hit);
+  }
+  return g;
+}
+
+function handlePositions(b) {
+  const cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+  return {
+    nw: [b.x, b.y], n: [cx, b.y], ne: [b.x + b.w, b.y],
+    w: [b.x, cy], e: [b.x + b.w, cy],
+    sw: [b.x, b.y + b.h], s: [cx, b.y + b.h], se: [b.x + b.w, b.y + b.h]
+  };
+}
+const CURSORS = { nw:"nwse-resize", se:"nwse-resize", ne:"nesw-resize", sw:"nesw-resize", n:"ns-resize", s:"ns-resize", e:"ew-resize", w:"ew-resize" };
+
+function renderOverlay() {
+  const z = state.zoom;
+  const objs = selectedObjs();
+
+  if (pen) renderPenPreview();
+
+  // 白箭頭：渲染路徑錨點
+  if (state.tool === "direct" && state.direct.objectId) {
+    const o = findObj(state.direct.objectId);
+    if (o && o.type === "path") renderPathAnchors(o);
+    else if (o) renderObjectBBox(o);
+    return;
+  }
+
+  if (!objs.length) {
+    if (state.tool === "artboard") renderArtboardHandles();
+    return;
+  }
+
+  if (state.tool === "artboard") {
+    renderArtboardHandles();
+    return;
+  }
+
+  const b = unionBBox(objs);
+
+  svgEl("rect", {
+    x: n(b.x), y: n(b.y), width: n(b.w), height: n(b.h),
+    fill: "none", stroke: "#ff9a00",
+    "stroke-width": 1 / z, "stroke-dasharray": `${4 / z} ${3 / z}`,
+    "pointer-events": "none"
+  }, overlayLayer);
+
+  if (objs.length === 1 && objs[0].type !== "text") {
+    const hs = 7 / z;
+    const pos = handlePositions(b);
+    for (const dir in pos) {
+      const [hx, hy] = pos[dir];
+      svgEl("rect", {
+        x: n(hx - hs / 2), y: n(hy - hs / 2), width: n(hs), height: n(hs),
+        fill: "#ffffff", stroke: "#ff9a00", "stroke-width": 1.3 / z,
+        "data-handle": dir, "pointer-events": "all",
+        style: `cursor:${CURSORS[dir]}`
+      }, overlayLayer);
+    }
+  }
+}
+
+function renderObjectBBox(o) {
+  const z = state.zoom;
+  svgEl("rect", {
+    x: n(o.x), y: n(o.y), width: n(o.w), height: n(o.h),
+    fill: "none", stroke: "#ff9a00", "stroke-width": 1 / z,
+    "pointer-events": "none"
+  }, overlayLayer);
+}
+
+function renderPathAnchors(o) {
+  const z = state.zoom;
+  const r = 3.5 / z;
+
+  // 路徑輔助線
+  svgEl("path", {
+    d: pathToD(o.points, o.closed),
+    fill: "none", stroke: "rgba(255,154,0,.5)", "stroke-width": 0.8 / z,
+    "pointer-events": "none"
+  }, overlayLayer);
+
+  for (let i = 0; i < o.points.length; i++) {
+    const p = o.points[i];
+    const isSel = state.direct.anchorIndex === i;
+    const isFirst = i === 0;
+
+    // 控制柄
+    for (const hKey of ["hIn", "hOut"]) {
+      const h = p[hKey];
+      if (!h) continue;
+      svgEl("line", { x1: n(p.x), y1: n(p.y), x2: n(h.x), y2: n(h.y), stroke: "#ff9a00", "stroke-width": 0.8 / z, "pointer-events": "none" }, overlayLayer);
+      svgEl("circle", {
+        cx: n(h.x), cy: n(h.y), r: n(2.4 / z),
+        fill: "#ff9a00", stroke: "none",
+        "data-anchor": i, "data-handle": hKey, "pointer-events": "all",
+        style: "cursor:move"
+      }, overlayLayer);
+    }
+
+    // 錨點
+    if (isFirst && !o.closed && o.points.length > 1) {
+      svgEl("rect", {
+        x: n(p.x - r), y: n(p.y - r), width: n(r * 2), height: n(r * 2),
+        fill: isSel ? "#ff9a00" : "#fff", stroke: "#ff9a00", "stroke-width": 1.2 / z,
+        "data-anchor": i, "pointer-events": "all", style: "cursor:move"
+      }, overlayLayer);
+    } else {
+      svgEl("circle", {
+        cx: n(p.x), cy: n(p.y), r: n(r),
+        fill: isSel ? "#ff9a00" : "#fff", stroke: "#ff9a00", "stroke-width": 1.2 / z,
+        "data-anchor": i, "pointer-events": "all", style: "cursor:move"
+      }, overlayLayer);
+    }
+  }
+}
+
+function renderArtboardHandles() {
+  const z = state.zoom;
+  const ab = getActiveArtboard();
+  if (!ab) return;
+  const hs = 7 / z;
+  const pos = {
+    nw: [ab.x, ab.y], n: [ab.x + ab.w / 2, ab.y], ne: [ab.x + ab.w, ab.y],
+    w: [ab.x, ab.y + ab.h / 2], e: [ab.x + ab.w, ab.y + ab.h / 2],
+    sw: [ab.x, ab.y + ab.h], s: [ab.x + ab.w / 2, ab.y + ab.h], se: [ab.x + ab.w, ab.y + ab.h]
+  };
+  for (const dir in pos) {
+    const [hx, hy] = pos[dir];
+    svgEl("rect", {
+      x: n(hx - hs / 2), y: n(hy - hs / 2), width: n(hs), height: n(hs),
+      fill: "#ffffff", stroke: "#ff9a00", "stroke-width": 1.3 / z,
+      "data-ab-handle": dir, "pointer-events": "all", style: `cursor:${CURSORS[dir]}`
+    }, overlayLayer);
+  }
+}
+
+function renderPenPreview() {
+  const z = state.zoom;
+  const pts = pen.points.slice();
+  svgEl("path", {
+    d: pathToD(pts, !!pen.closed),
+    fill: pen.closed ? "rgba(255,154,0,.12)" : "none",
+    stroke: "#ff9a00", "stroke-width": 1.2 / z, "pointer-events": "none"
+  }, overlayLayer);
+
+  if (!pen.closed && pts.length) {
+    const last = pts[pts.length - 1];
+    svgEl("line", {
+      x1: n(last.x), y1: n(last.y), x2: n(mouseDoc.x), y2: n(mouseDoc.y),
+      stroke: "#ff9a00", "stroke-width": 1 / z, "stroke-dasharray": `${3 / z} ${3 / z}`,
+      "pointer-events": "none"
+    }, overlayLayer);
+  }
+
+  const r = 3.5 / z;
+  for (const p of pts) {
+    svgEl("circle", {
+      cx: n(p.x), cy: n(p.y), r: n(r),
+      fill: "#fff", stroke: "#ff9a00", "stroke-width": 1.2 / z, "pointer-events": "none"
+    }, overlayLayer);
+  }
+  for (const p of pts) {
+    for (const h of [p.hIn, p.hOut]) {
+      if (!h) continue;
+      svgEl("line", {
+        x1: n(p.x), y1: n(p.y), x2: n(h.x), y2: n(h.y),
+        stroke: "#ff9a00", "stroke-width": 0.8 / z, "pointer-events": "none"
+      }, overlayLayer);
+      svgEl("circle", {
+        cx: n(h.x), cy: n(h.y), r: n(2.6 / z),
+        fill: "#ff9a00", "pointer-events": "none"
+      }, overlayLayer);
+    }
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   尺標繪製
+   ══════════════════════════════════════════════════════════ */
+function niceStep(zoom) {
+  const targetPx = 80;
+  const targetMm = targetPx / zoom;
+  const steps = [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
+  for (const s of steps) if (s >= targetMm) return s;
+  return 1000;
+}
+
+function drawRulers() {
+  const dpr = window.devicePixelRatio || 1;
+
+  const rh = rulerH, rv = rulerV;
+  const wh = rh.clientWidth, hh = rh.clientHeight;
+  const wv = rv.clientWidth, hv = rv.clientHeight;
+
+  rh.width = wh * dpr; rh.height = hh * dpr;
+  rv.width = wv * dpr; rv.height = hv * dpr;
+
+  const ctxH = rh.getContext("2d");
+  const ctxV = rv.getContext("2d");
+  ctxH.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctxV.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  ctxH.fillStyle = "#2a2a2a"; ctxH.fillRect(0, 0, wh, hh);
+  ctxV.fillStyle = "#2a2a2a"; ctxV.fillRect(0, 0, wv, hv);
+
+  const ab = getActiveArtboard();
+  const originMmX = ab ? ab.x : 0;
+  const originMmY = ab ? ab.y : 0;
+  const originPxX = originMmX * state.zoom + state.panX;
+  const originPxY = originMmY * state.zoom + state.panY;
+
+  const step = niceStep(state.zoom);
+  const subStep = step / 5;
+
+  ctxH.strokeStyle = "#555";
+  ctxH.fillStyle = "#999";
+  ctxH.font = "10px -apple-system,sans-serif";
+  ctxH.textBaseline = "top";
+
+  const startMmX = (0 - originPxX) / state.zoom + originMmX;
+  const endMmX = (wh - originPxX) / state.zoom + originMmX;
+
+  const subStartX = Math.floor(startMmX / subStep) * subStep;
+  for (let m = subStartX; m <= endMmX; m += subStep) {
+    const px = (m - originMmX) * state.zoom + originPxX;
+    const isMajor = Math.abs(m / step - Math.round(m / step)) < 0.001;
+    ctxH.beginPath();
+    ctxH.moveTo(px, isMajor ? hh * 0.3 : hh * 0.65);
+    ctxH.lineTo(px, hh);
+    ctxH.stroke();
+  }
+  const majorStartX = Math.ceil(startMmX / step) * step;
+  for (let m = majorStartX; m <= endMmX; m += step) {
+    const px = (m - originMmX) * state.zoom + originPxX;
+    ctxH.fillText(Math.round(m * 10) / 10, px + 2, 2);
+  }
+
+  // 垂直尺標
+  ctxV.strokeStyle = "#555";
+  ctxV.fillStyle = "#999";
+  ctxV.font = "10px -apple-system,sans-serif";
+  ctxV.textBaseline = "top";
+
+  const startMmY = (0 - originPxY) / state.zoom + originMmY;
+  const endMmY = (hv - originPxY) / state.zoom + originMmY;
+
+  const subStartY = Math.floor(startMmY / subStep) * subStep;
+  for (let m = subStartY; m <= endMmY; m += subStep) {
+    const py = (m - originMmY) * state.zoom + originPxY;
+    const isMajor = Math.abs(m / step - Math.round(m / step)) < 0.001;
+    ctxV.beginPath();
+    ctxV.moveTo(isMajor ? wv * 0.3 : wv * 0.65, py);
+    ctxV.lineTo(wv, py);
+    ctxV.stroke();
+  }
+  ctxV.save();
+  ctxV.translate(2, 0);
+  ctxV.rotate(Math.PI / 2);
+  ctxV.textAlign = "right";
+  const majorStartY = Math.ceil(startMmY / step) * step;
+  for (let m = majorStartY; m <= endMmY; m += step) {
+    const py = (m - originMmY) * state.zoom + originPxY;
+    ctxV.fillText(Math.round(m * 10) / 10, py - 2, 0);
+  }
+  ctxV.restore();
+}
+
+/* ══════════════════════════════════════════════════════════
+   面板：工作區域
+   ══════════════════════════════════════════════════════════ */
+function renderArtboardPanel() {
+  const list = $("#artboardList");
+  list.innerHTML = "";
+  for (const ab of state.doc.artboards) {
+    const li = document.createElement("li");
+    li.className = "ab-item" + (ab.id === state.doc.activeArtboard ? " active" : "");
+    li.dataset.id = ab.id;
+    const nameEl = document.createElement("span");
+    nameEl.className = "ab-name";
+    nameEl.textContent = ab.name;
+    const sizeEl = document.createElement("span");
+    sizeEl.className = "ab-size";
+    sizeEl.textContent = `${n(ab.w)}×${n(ab.h)}`;
+    li.append(nameEl, sizeEl);
+    li.addEventListener("click", () => {
+      state.doc.activeArtboard = ab.id;
+      pushHistory();
+      render();
+    });
+    li.addEventListener("dblclick", () => {
+      const newName = prompt("工作區域名稱", ab.name);
+      if (newName && newName.trim()) { ab.name = newName.trim(); pushHistory(); render(); }
+    });
+    list.appendChild(li);
+  }
+}
+
+$("#btnNewArtboard").addEventListener("click", () => {
+  const ab = getActiveArtboard();
+  const newAb = makeArtboard(
+    "工作區域 " + (state.doc.artboards.length + 1),
+    ab ? ab.x + ab.w + 20 : 0,
+    ab ? ab.y : 0,
+    ab ? ab.w : 210,
+    ab ? ab.h : 297
+  );
+  state.doc.artboards.push(newAb);
+  state.doc.activeArtboard = newAb.id;
+  pushHistory();
+  fitToScreen();
+});
+$("#btnDelArtboard").addEventListener("click", () => {
+  if (state.doc.artboards.length <= 1) { toast("至少保留一個工作區域"); return; }
+  if (!confirm("確定刪除此工作區域？")) return;
+  const idx = state.doc.artboards.findIndex(a => a.id === state.doc.activeArtboard);
+  state.doc.artboards.splice(idx, 1);
+  state.doc.activeArtboard = state.doc.artboards[Math.max(0, idx - 1)].id;
+  pushHistory();
+  render();
+});
+$("#btnClearGuides").addEventListener("click", () => {
+  state.doc.guides.horizontal = [];
+  state.doc.guides.vertical = [];
+  pushHistory();
+  render();
+  toast("已清除所有參考線");
+});
+
+/* ══════════════════════════════════════════════════════════
+   面板：圖層
+   ══════════════════════════════════════════════════════════ */
+const TYPE_ABBR = { rect: "矩", ellipse: "圓", line: "線", path: "路", text: "字" };
+function renderLayerPanel() {
+  const list = $("#layerList");
+  list.innerHTML = "";
+  const objs = state.doc.objects;
+  $("#layerCount").textContent = objs.length;
+  for (let i = objs.length - 1; i >= 0; i--) {
+    const o = objs[i];
+    const li = document.createElement("li");
+    li.className = "layer-item" + (state.selection.has(o.id) ? " selected" : "");
+    li.dataset.id = o.id;
+    const eye = document.createElement("span");
+    eye.className = "ico" + (o.visible ? "" : " off");
+    eye.dataset.act = "visible";
+    eye.innerHTML = o.visible
+      ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/></svg>'
+      : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l18 18"/><path d="M10.6 6.1A10.9 10.9 0 0 1 12 6c6.4 0 10 6 10 6a17 17 0 0 1-3.4 4M6.2 6.4C3.7 8.2 2 12 2 12s3.6 6.5 10 6.5c1.6 0 3-.4 4.2-1"/></svg>';
+    const lock = document.createElement("span");
+    lock.className = "ico" + (o.locked ? "" : " off");
+    lock.dataset.act = "lock";
+    lock.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+    const name = document.createElement("span");
+    name.className = "name";
+    name.textContent = o.name || o.type;
+    name.title = o.name || o.type;
+    const type = document.createElement("span");
+    type.className = "type";
+    type.textContent = TYPE_ABBR[o.type] || "";
+    li.append(eye, lock, name, type);
+    list.appendChild(li);
+  }
+}
+$("#layerList").addEventListener("click", e => {
+  const li = e.target.closest(".layer-item");
+  if (!li) return;
+  const o = findObj(li.dataset.id);
+  if (!o) return;
+  const act = e.target.closest("[data-act]");
+  if (act) {
+    const kind = act.dataset.act;
+    if (kind === "visible") { o.visible = !o.visible; pushHistory(); render(); return; }
+    if (kind === "lock") { o.locked = !o.locked; if (o.locked) state.selection.delete(o.id); render(); return; }
+  }
+  if (o.locked) return;
+  if (e.shiftKey) {
+    if (state.selection.has(o.id)) state.selection.delete(o.id);
+    else state.selection.add(o.id);
+  } else {
+    state.selection.clear();
+    state.selection.add(o.id);
+  }
+  if (state.tool === "direct") {
+    state.direct.objectId = o.id;
+    state.direct.anchorIndex = -1;
+  }
+  render();
+});
+
+/* ══════════════════════════════════════════════════════════
+   面板：屬性
+   ══════════════════════════════════════════════════════════ */
+const P = {
+  x: $("#pX"), y: $("#pY"), w: $("#pW"), h: $("#pH"), r: $("#pR"),
+  fill: $("#pFill"), stroke: $("#pStroke"), strokeW: $("#pStrokeW"),
+  opacity: $("#pOpacity"), fontSize: $("#pFontSize"), rowFontSize: $("#rowFontSize")
+};
+function setInput(el, value) { if (document.activeElement !== el) el.value = value; }
+function renderProperties() {
+  const objs = selectedObjs();
+  const active = objs[0];
+  const disable = !active;
+  [P.x, P.y, P.w, P.h, P.r, P.fill, P.stroke, P.strokeW, P.opacity, P.fontSize].forEach(el => { el.disabled = disable; el.style.opacity = disable ? .45 : 1; });
+  if (!active) { P.rowFontSize.style.display = "none"; return; }
+  setInput(P.x, n(active.x)); setInput(P.y, n(active.y));
+  setInput(P.w, n(active.w)); setInput(P.h, n(active.h));
+  setInput(P.r, n(active.rotation || 0));
+  if (active.fill && active.fill !== "none") P.fill.value = active.fill;
+  if (active.stroke && active.stroke !== "none") P.stroke.value = active.stroke;
+  setInput(P.strokeW, n(active.strokeWidth || 0));
+  setInput(P.opacity, Math.round((active.opacity ?? 1) * 100));
+  P.rowFontSize.style.display = active.type === "text" ? "" : "none";
+  if (active.type === "text") setInput(P.fontSize, n(active.fontSize));
+}
+function applyToSelection(fn) {
+  const objs = selectedObjs().filter(o => !o.locked);
+  if (!objs.length) return;
+  for (const o of objs) fn(o);
+  pushHistory();
+  render();
+}
+function bindNum(el, fn) {
+  el.addEventListener("change", () => {
+    const v = parseFloat(el.value);
+    if (isNaN(v)) return;
+    applyToSelection(o => fn(o, v));
+  });
+}
+bindNum(P.x, (o, v) => { moveObjectBy(o, v - o.x, 0); });
+bindNum(P.y, (o, v) => { moveObjectBy(o, 0, v - o.y); });
+bindNum(P.w, (o, v) => { if (o.type === "text") return; scaleObjectTo(o, JSON.parse(JSON.stringify(o)), { x: o.x, y: o.y, w: Math.max(v, 0.1), h: o.h }); });
+bindNum(P.h, (o, v) => { if (o.type === "text") return; scaleObjectTo(o, JSON.parse(JSON.stringify(o)), { x: o.x, y: o.y, w: o.w, h: Math.max(v, 0.1) }); });
+bindNum(P.r, (o, v) => { o.rotation = v; });
+bindNum(P.strokeW, (o, v) => { o.strokeWidth = Math.max(v, 0); });
+bindNum(P.fontSize, (o, v) => { if (o.type === "text") { o.fontSize = Math.max(v, 1); updateBBox(o); } });
+P.fill.addEventListener("input", () => applyToSelection(o => { o.fill = P.fill.value; }));
+P.stroke.addEventListener("input", () => applyToSelection(o => { o.stroke = P.stroke.value; }));
+P.opacity.addEventListener("input", () => applyToSelection(o => { o.opacity = parseInt(P.opacity.value, 10) / 100; }));
+$("#pFillNone").addEventListener("click", () => applyToSelection(o => { o.fill = "none"; }));
+$("#pStrokeNone").addEventListener("click", () => applyToSelection(o => { o.stroke = "none"; }));
+
+/* ══════════════════════════════════════════════════════════
+   物件幾何操作
+   ══════════════════════════════════════════════════════════ */
+function moveObjectBy(o, dx, dy) {
+  switch (o.type) {
+    case "line": o.x1 += dx; o.y1 += dy; o.x2 += dx; o.y2 += dy; updateBBox(o); break;
+    case "path":
+      for (const p of o.points) {
+        p.x += dx; p.y += dy;
+        if (p.hIn) { p.hIn.x += dx; p.hIn.y += dy; }
+        if (p.hOut) { p.hOut.x += dx; p.hOut.y += dy; }
+      }
+      updateBBox(o); break;
+    default: o.x += dx; o.y += dy;
+  }
+}
+function scaleObjectTo(o, snap, box) {
+  if (o.type === "rect" || o.type === "ellipse") { o.x = box.x; o.y = box.y; o.w = box.w; o.h = box.h; return; }
+  const sx = snap.w ? box.w / snap.w : 1;
+  const sy = snap.h ? box.h / snap.h : 1;
+  if (o.type === "line") {
+    o.x1 = box.x + (snap.x1 - snap.x) * sx;
+    o.y1 = box.y + (snap.y1 - snap.y) * sy;
+    o.x2 = box.x + (snap.x2 - snap.x) * sx;
+    o.y2 = box.y + (snap.y2 - snap.y) * sy;
+    updateBBox(o);
+    return;
+  }
+  if (o.type === "path") {
+    o.points = snap.points.map(p => ({
+      x: box.x + (p.x - snap.x) * sx,
+      y: box.y + (p.y - snap.y) * sy,
+      hIn: p.hIn ? { x: box.x + (p.hIn.x - snap.x) * sx, y: box.y + (p.hIn.y - snap.y) * sy } : null,
+      hOut: p.hOut ? { x: box.x + (p.hOut.x - snap.x) * sx, y: box.y + (p.hOut.y - snap.y) * sy } : null
+    }));
+    updateBBox(o);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   指標互動
+   ══════════════════════════════════════════════════════════ */
+viewport.addEventListener("pointerdown", onPointerDown);
+window.addEventListener("pointermove", onPointerMove);
+window.addEventListener("pointerup", onPointerUp);
+window.addEventListener("pointercancel", onPointerUp);
+
+function onPointerDown(e) {
+  if (e.button === 1 || (e.button === 0 && spaceDown) || state.tool === "hand") {
+    e.preventDefault();
+    drag = { mode: "pan", sx: e.clientX, sy: e.clientY, px: state.panX, py: state.panY };
+    viewport.style.cursor = "grabbing";
+    return;
+  }
+  if (e.button !== 0) return;
+  const p = toDoc(e);
+  mouseDoc = p;
+
+  // 工作區域工具
+  if (state.tool === "artboard") {
+    const handleEl = e.target.closest("[data-ab-handle]");
+    if (handleEl) {
+      const ab = getActiveArtboard();
+      if (ab) drag = { mode: "ab-resize", dir: handleEl.dataset.abHandle, start: p, ab, snap: { ...ab } };
+      return;
+    }
+    const abEl = e.target.closest("[data-ab]");
+    if (abEl) {
+      const ab = state.doc.artboards.find(a => a.id === abEl.dataset.ab);
+      if (ab) {
+        state.doc.activeArtboard = ab.id;
+        drag = { mode: "ab-move", start: p, ab, snap: { ...ab } };
+        render();
+        return;
+      }
+    }
+    // 點空白：新建工作區域
+    if (!e.target.closest("[data-id]")) {
+      const newAb = makeArtboard("工作區域 " + (state.doc.artboards.length + 1), p.x, p.y, 210, 297);
+      state.doc.artboards.push(newAb);
+      state.doc.activeArtboard = newAb.id;
+      pushHistory();
+      render();
+      toast("已新增工作區域，可拖曳邊角調整大小");
+    }
+    return;
+  }
+
+  // 白箭頭
+  if (state.tool === "direct") {
+    const anchorEl = e.target.closest("[data-anchor]");
+    if (anchorEl && state.direct.objectId) {
+      const o = findObj(state.direct.objectId);
+      if (o && o.type === "path") {
+        const idx = parseInt(anchorEl.dataset.anchor, 10);
+        const hType = anchorEl.dataset.handle;
+        state.direct.anchorIndex = idx;
+        if (hType) {
+          drag = { mode: "handle-drag", obj: o, idx, hType };
+        } else {
+          drag = { mode: "anchor-drag", obj: o, idx, start: p, snap: JSON.parse(JSON.stringify(o.points[idx])) };
+        }
+        render();
+        return;
+      }
+    }
+    const objEl = e.target.closest("[data-id]");
+    if (objEl) {
+      const o = findObj(objEl.dataset.id);
+      if (o && o.type === "path") {
+        state.direct.objectId = o.id;
+        state.direct.anchorIndex = -1;
+        state.selection.clear();
+        state.selection.add(o.id);
+        render();
+        return;
+      }
+    }
+    state.direct.objectId = null;
+    state.selection.clear();
+    render();
+    return;
+  }
+
+  if (state.tool === "select") {
+    const handleEl = e.target.closest("[data-handle]");
+    if (handleEl) {
+      const o = selectedObjs()[0];
+      if (o) drag = { mode: "resize", dir: handleEl.dataset.handle, start: p, obj: o, snap: JSON.parse(JSON.stringify(o)) };
+      return;
+    }
+    const objEl = e.target.closest("[data-id]");
+    if (objEl) {
+      const id = objEl.dataset.id;
+      const o = findObj(id);
+      if (!o || o.locked) return;
+      if (!state.selection.has(id)) {
+        if (!e.shiftKey) state.selection.clear();
+        state.selection.add(id);
+      }
+      const objs = selectedObjs().filter(x => !x.locked);
+      drag = { mode: "move", start: p, items: objs.map(x => ({ obj: x, snap: JSON.parse(JSON.stringify(x)) })) };
+      render();
+      return;
+    }
+    if (!e.shiftKey) state.selection.clear();
+    drag = { mode: "marquee", start: p, cur: p };
+    render();
+    return;
+  }
+
+  if (state.tool === "rect" || state.tool === "ellipse" || state.tool === "line") { startDraw(p); return; }
+  if (state.tool === "pen") { penDown(p); return; }
+  if (state.tool === "text") { startTextEditor(p); return; }
+}
+
+function startDraw(p) {
+  const o = makeShape(state.tool, p, p);
+  state.doc.objects.push(o);
+  state.selection.clear();
+  state.selection.add(o.id);
+  drag = { mode: "draw", start: p, obj: o };
+  render();
+}
+
+function onPointerMove(e) {
+  if (!drag) {
+    if (state.tool === "pen" && pen) { mouseDoc = toDoc(e); render(); }
+    return;
+  }
+  const p = toDoc(e);
+  mouseDoc = p;
+
+  switch (drag.mode) {
+    case "pan":
+      state.panX = drag.px + (e.clientX - drag.sx);
+      state.panY = drag.py + (e.clientY - drag.sy);
+      worldInner.setAttribute("transform", `translate(${state.panX} ${state.panY}) scale(${state.zoom})`);
+      break;
+    case "draw": {
+      const a = drag.start, o = drag.obj;
+      if (o.type === "line") { o.x1 = a.x; o.y1 = a.y; o.x2 = p.x; o.y2 = p.y; }
+      else { o.x = Math.min(a.x, p.x); o.y = Math.min(a.y, p.y); o.w = Math.abs(p.x - a.x); o.h = Math.abs(p.y - a.y); }
+      updateBBox(o);
+      render();
+      break;
+    }
+    case "move": {
+      const dx = p.x - drag.start.x, dy = p.y - drag.start.y;
+      for (const it of drag.items) {
+        Object.assign(it.obj, JSON.parse(JSON.stringify(it.snap)));
+        moveObjectBy(it.obj, dx, dy);
+      }
+      render();
+      break;
+    }
+    case "resize": {
+      const s = drag.snap;
+      const dx = p.x - drag.start.x, dy = p.y - drag.start.y;
+      let { x, y, w, h } = { x: s.x, y: s.y, w: s.w, h: s.h };
+      if (drag.dir.includes("w")) { x += dx; w -= dx; }
+      if (drag.dir.includes("e")) { w += dx; }
+      if (drag.dir.includes("n")) { y += dy; h -= dy; }
+      if (drag.dir.includes("s")) { h += dy; }
+      if (w < 0.5) { if (drag.dir.includes("w")) x = s.x + s.w - 0.5; w = 0.5; }
+      if (h < 0.5) { if (drag.dir.includes("n")) y = s.y + s.h - 0.5; h = 0.5; }
+      scaleObjectTo(drag.obj, s, { x, y, w, h });
+      render();
+      break;
+    }
+    case "marquee":
+      drag.cur = p;
+      renderMarquee();
+      break;
+    case "penDrag": {
+      const pt = pen.points[drag.idx];
+      pt.hOut = { x: p.x, y: p.y };
+      pt.hIn = { x: 2 * pt.x - p.x, y: 2 * pt.y - p.y };
+      render();
+      break;
+    }
+    case "anchor-drag": {
+      const o = drag.obj, idx = drag.idx, snap = drag.snap;
+      const dx = p.x - drag.start.x, dy = p.y - drag.start.y;
+      const pt = o.points[idx];
+      pt.x = snap.x + dx; pt.y = snap.y + dy;
+      if (pt.hIn) { pt.hIn = { x: snap.hIn ? snap.hIn.x + dx : null, y: snap.hIn ? snap.hIn.y + dy : null }; }
+      if (pt.hOut) { pt.hOut = { x: snap.hOut ? snap.hOut.x + dx : null, y: snap.hOut ? snap.hOut.y + dy : null }; }
+      updateBBox(o);
+      render();
+      break;
+    }
+    case "handle-drag": {
+      const o = drag.obj, idx = drag.idx, hType = drag.hType;
+      const pt = o.points[idx];
+      const newH = { x: p.x, y: p.y };
+      pt[hType] = newH;
+      const otherH = hType === "hIn" ? "hOut" : "hIn";
+      if (pt[otherH] !== undefined) {
+        // 鏡像另一側以保持平滑（按住 shift 解除對稱？此處預設不對稱，讓使用者自由控制）
+      }
+      updateBBox(o);
+      render();
+      break;
+    }
+    case "ab-move": {
+      const ab = drag.ab, snap = drag.snap;
+      ab.x = snap.x + (p.x - drag.start.x);
+      ab.y = snap.y + (p.y - drag.start.y);
+      render();
+      break;
+    }
+    case "ab-resize": {
+      const ab = drag.ab, snap = drag.snap;
+      const dx = p.x - drag.start.x, dy = p.y - drag.start.y;
+      let { x, y, w, h } = { x: snap.x, y: snap.y, w: snap.w, h: snap.h };
+      if (drag.dir.includes("w")) { x += dx; w -= dx; }
+      if (drag.dir.includes("e")) { w += dx; }
+      if (drag.dir.includes("n")) { y += dy; h -= dy; }
+      if (drag.dir.includes("s")) { h += dy; }
+      if (w < 5) { if (drag.dir.includes("w")) x = snap.x + snap.w - 5; w = 5; }
+      if (h < 5) { if (drag.dir.includes("n")) y = snap.y + snap.h - 5; h = 5; }
+      ab.x = x; ab.y = y; ab.w = w; ab.h = h;
+      render();
+      break;
+    }
+    case "guide-drag": {
+      const g = drag.guide;
+      if (g.axis === "h") g.y = p.y;
+      else g.x = p.x;
+      render();
+      break;
+    }
+  }
+}
+
+function renderMarquee() {
+  overlayLayer.innerHTML = "";
+  const a = drag.start, b = drag.cur;
+  svgEl("rect", {
+    x: n(Math.min(a.x, b.x)), y: n(Math.min(a.y, b.y)),
+    width: n(Math.abs(b.x - a.x)), height: n(Math.abs(b.y - a.y)),
+    fill: "rgba(255,154,0,.08)", stroke: "#ff9a00",
+    "stroke-width": 1 / state.zoom, "stroke-dasharray": `${4 / state.zoom} ${3 / state.zoom}`,
+    "pointer-events": "none"
+  }, overlayLayer);
+}
+
+function onPointerUp() {
+  if (!drag) return;
+  const mode = drag.mode;
+
+  if (mode === "pan") viewport.style.cursor = "";
+
+  if (mode === "draw") {
+    const o = drag.obj;
+    if (o.type === "line") {
+      if (dist({ x: o.x1, y: o.y1 }, { x: o.x2, y: o.y2 }) < 0.8) {
+        state.doc.objects.pop();
+        state.selection.clear();
+      } else pushHistory();
+    } else {
+      if (o.w < 0.8 && o.h < 0.8) { state.doc.objects.pop(); state.selection.clear(); }
+      else pushHistory();
+    }
+  }
+
+  if (["move", "resize", "anchor-drag", "handle-drag", "ab-move", "ab-resize"].includes(mode)) pushHistory();
+
+  if (mode === "marquee") {
+    const a = drag.start, b = drag.cur;
+    const box = { x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), w: Math.abs(b.x - a.x), h: Math.abs(b.y - a.y) };
+    if (box.w > 1 || box.h > 1) {
+      for (const o of state.doc.objects) {
+        if (!o.visible || o.locked) continue;
+        if (o.x < box.x + box.w && o.x + o.w > box.x && o.y < box.y + box.h && o.y + o.h > box.y) {
+          state.selection.add(o.id);
+        }
+      }
+    }
+  }
+
+  drag = null;
+  render();
+}
+
+/* ══════════════════════════════════════════════════════════
+   鋼筆
+   ══════════════════════════════════════════════════════════ */
+function penDown(p) {
+  if (!pen) {
+    pen = { points: [{ x: p.x, y: p.y, hIn: null, hOut: null }], closed: false };
+    drag = { mode: "penDrag", idx: 0 };
+    render();
+    return;
+  }
+  const first = pen.points[0];
+  if (pen.points.length > 1 && dist(p, first) < 9 / state.zoom) { pen.closed = true; finishPen(); return; }
+  pen.points.push({ x: p.x, y: p.y, hIn: null, hOut: null });
+  drag = { mode: "penDrag", idx: pen.points.length - 1 };
+  render();
+}
+function finishPen() {
+  if (pen && pen.points.length >= 2) {
+    const o = baseObj("path", "路徑");
+    o.points = pen.points;
+    o.closed = !!pen.closed;
+    o.fill = pen.closed ? state.style.fill : "none";
+    updateBBox(o);
+    state.doc.objects.push(o);
+    state.selection.clear();
+    state.selection.add(o.id);
+    pushHistory();
+  }
+  pen = null; drag = null;
+  render();
+}
+function cancelPen() { pen = null; drag = null; render(); }
+
+/* ══════════════════════════════════════════════════════════
+   文字
+   ══════════════════════════════════════════════════════════ */
+function startTextEditor(p) {
+  const r = viewport.getBoundingClientRect();
+  const fs = state.style.fontSize * state.zoom;
+  const sx = r.left + state.panX + p.x * state.zoom;
+  const sy = r.top + state.panY + p.y * state.zoom;
+  const ta = document.createElement("textarea");
+  ta.className = "text-editor";
+  ta.style.left = sx + "px";
+  ta.style.top = sy + "px";
+  ta.style.fontSize = fs + "px";
+  ta.style.fontFamily = state.style.fontFamily;
+  ta.style.color = state.style.fill === "none" ? "#000" : state.style.fill;
+  ta.style.height = (fs * 1.35) + "px";
+  ta.style.minWidth = (fs * 3) + "px";
+  document.body.appendChild(ta);
+  ta.focus();
+  let finished = false;
+  const done = () => {
+    if (finished) return;
+    finished = true;
+    const text = ta.value.replace(/\s+$/, "");
+    ta.remove();
+    if (text) {
+      const o = baseObj("text", text.slice(0, 14));
+      o.x = p.x; o.y = p.y; o.text = text;
+      o.fontSize = state.style.fontSize;
+      o.fontFamily = state.style.fontFamily;
+      o.fill = state.style.fill;
+      o.stroke = "none";
+      o.strokeWidth = 0;
+      updateBBox(o);
+      state.doc.objects.push(o);
+      state.selection.clear();
+      state.selection.add(o.id);
+      pushHistory();
+    }
+    render();
+  };
+  ta.addEventListener("blur", done);
+  ta.addEventListener("input", () => { ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; });
+  ta.addEventListener("keydown", ev => {
+    ev.stopPropagation();
+    if (ev.key === "Escape") { ta.value = ""; ta.blur(); }
+    else if (ev.key === "Enter" && !ev.shiftKey) { ev.preventDefault(); ta.blur(); }
+  });
+}
+
+/* ══════════════════════════════════════════════════════════
+   尺標拖曳參考線
+   ══════════════════════════════════════════════════════════ */
+rulerH.addEventListener("pointerdown", e => {
+  const r = viewport.getBoundingClientRect();
+  const guide = { id: "g" + (++uidSeed), y: (e.clientY - r.top - state.panY) / state.zoom };
+  state.doc.guides.horizontal.push(guide);
+  drag = { mode: "guide-drag", guide, axis: "h" };
+  document.body.style.cursor = "ns-resize";
+  e.preventDefault();
+});
+rulerV.addEventListener("pointerdown", e => {
+  const r = viewport.getBoundingClientRect();
+  const guide = { id: "g" + (++uidSeed), x: (e.clientX - r.left - state.panX) / state.zoom };
+  state.doc.guides.vertical.push(guide);
+  drag = { mode: "guide-drag", guide, axis: "v" };
+  document.body.style.cursor = "ew-resize";
+  e.preventDefault();
+});
+window.addEventListener("pointermove", e => {
+  if (!drag || drag.mode !== "guide-drag") return;
+  const p = toDoc(e);
+  if (drag.guide && drag.axis === "h") drag.guide.y = p.y;
+  else if (drag.guide && drag.axis === "v") drag.guide.x = p.x;
+  // 如果拖回尺標則刪除
+  const r = viewport.getBoundingClientRect();
+  if (drag.axis === "h" && e.clientY < r.top) {
+    state.doc.guides.horizontal = state.doc.guides.horizontal.filter(g => g.id !== drag.guide.id);
+    drag = null;
+  } else if (drag.axis === "v" && e.clientX < r.left) {
+    state.doc.guides.vertical = state.doc.guides.vertical.filter(g => g.id !== drag.guide.id);
+    drag = null;
+  }
+  render();
+});
+window.addEventListener("pointerup", () => {
+  if (drag && drag.mode === "guide-drag") { pushHistory(); drag = null; document.body.style.cursor = ""; }
+});
+
+// 刪除參考線
+guidesLayer.addEventListener("pointerdown", e => {
+  const line = e.target.closest("[data-guide]");
+  if (!line) return;
+  const [axis, id] = line.dataset.guide.split(":");
+  if (axis === "h") state.doc.guides.horizontal = state.doc.guides.horizontal.filter(g => g.id !== id);
+  else state.doc.guides.vertical = state.doc.guides.vertical.filter(g => g.id !== id);
+  pushHistory();
+  render();
+  toast("已刪除參考線");
+  e.stopPropagation();
+});
+
+/* ══════════════════════════════════════════════════════════
+   縮放 / 平移
+   ══════════════════════════════════════════════════════════ */
+function setZoom(nz, ax, ay) {
+  const vr = viewport.getBoundingClientRect();
+  const px = (ax ?? (vr.left + vr.width / 2)) - vr.left;
+  const py = (ay ?? (vr.top + vr.height / 2)) - vr.top;
+  const old = state.zoom;
+  nz = clamp(nz, 0.03, 16);
+  const dx = (px - state.panX) / old;
+  const dy = (py - state.panY) / old;
+  state.zoom = nz;
+  state.panX = px - dx * nz;
+  state.panY = py - dy * nz;
+  render();
+}
+function fitToScreen() {
+  const vr = viewport.getBoundingClientRect();
+  const ab = getActiveArtboard();
+  if (!ab) return;
+  const pad = 56;
+  const z = Math.min((vr.width - pad * 2) / ab.w, (vr.height - pad * 2) / ab.h);
+  state.zoom = clamp(z, 0.03, 16);
+  state.panX = (vr.width - ab.w * state.zoom) / 2 - ab.x * state.zoom;
+  state.panY = (vr.height - ab.h * state.zoom) / 2 - ab.y * state.zoom;
+  render();
+}
+viewport.addEventListener("wheel", e => {
+  e.preventDefault();
+  if (e.shiftKey) { state.panX -= e.deltaY; render(); return; }
+  const factor = Math.exp(-e.deltaY * 0.0016);
+  setZoom(state.zoom * factor, e.clientX, e.clientY);
+}, { passive: false });
+
+/* ══════════════════════════════════════════════════════════
+   工具切換
+   ══════════════════════════════════════════════════════════ */
+function setTool(t) {
+  if (state.tool === "pen" && t !== "pen") finishPen();
+  state.tool = t;
+  $$(".tool").forEach(b => b.classList.toggle("active", b.dataset.tool === t));
+  viewport.style.cursor = t === "hand" ? "grab" : (t === "text" ? "text" : (t === "select" ? "default" : "crosshair"));
+  updateHint();
+  render();
+}
+$$(".tool").forEach(btn => btn.addEventListener("click", () => setTool(btn.dataset.tool)));
+
+function updateHint() {
+  const map = {
+    select: "選取：拖曳移動 · 控制點縮放 · 空白鍵平移",
+    direct: "直接選取：點擊路徑編輯錨點，拖曳錨點或控制柄調整曲線",
+    artboard: "工作區域：點擊空白處新增 · 拖曳移動 · 拖曳角點調整大小",
+    rect: "矩形：按住拖曳繪製",
+    ellipse: "橢圓：按住拖曳繪製",
+    line: "線段：按住拖曳繪製",
+    pen: "鋼筆：點擊加錨點 · 拖曳拉曲線 · 點回起點閉合 · Enter 完成 · Esc 取消",
+    text: "文字：點擊畫布輸入 · Enter 確認 · Esc 取消",
+    hand: "平移：拖曳移動畫布"
+  };
+  $("#hint").textContent = map[state.tool] || "";
+}
+
+/* ══════════════════════════════════════════════════════════
+   縮放按鈕
+   ══════════════════════════════════════════════════════════ */
+$$("[data-zoom]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const act = btn.dataset.zoom;
+    if (act === "in") setZoom(state.zoom * 1.25);
+    else if (act === "out") setZoom(state.zoom / 1.25);
+    else if (act === "fit") fitToScreen();
+    else if (act === "100") {
+      const vr = viewport.getBoundingClientRect();
+      const cx = (vr.width / 2 - state.panX) / state.zoom;
+      const cy = (vr.height / 2 - state.panY) / state.zoom;
+      state.zoom = 1;
+      state.panX = vr.width / 2 - cx;
+      state.panY = vr.height / 2 - cy;
+      render();
+    }
+  });
+});
+
+/* ══════════════════════════════════════════════════════════
+   對齊 / 分佈
+   ══════════════════════════════════════════════════════════ */
+function renderAlignmentButtons() {
+  const cnt = selectedObjs().filter(o => !o.locked).length;
+  $$(".align-btn").forEach(b => b.disabled = cnt < 1);
+  $$(".dist-btn").forEach(b => b.disabled = cnt < 3);
+  $("#btnApplyGap").disabled = cnt < 2;
+}
+
+function alignObjects(type) {
+  const objs = selectedObjs().filter(o => !o.locked);
+  if (objs.length < 1) return;
+  const bbox = unionBBox(objs);
+  for (const o of objs) {
+    if (type === "left") moveObjectBy(o, bbox.x - o.x, 0);
+    else if (type === "hcenter") moveObjectBy(o, (bbox.x + bbox.w / 2) - (o.x + o.w / 2), 0);
+    else if (type === "right") moveObjectBy(o, (bbox.x + bbox.w) - (o.x + o.w), 0);
+    else if (type === "top") moveObjectBy(o, 0, bbox.y - o.y);
+    else if (type === "vcenter") moveObjectBy(o, 0, (bbox.y + bbox.h / 2) - (o.y + o.h / 2));
+    else if (type === "bottom") moveObjectBy(o, 0, (bbox.y + bbox.h) - (o.y + o.h));
+  }
+  pushHistory();
+  render();
+}
+$$(".align-btn").forEach(b => b.addEventListener("click", () => alignObjects(b.dataset.align)));
+
+function distributeObjects(dir) {
+  const objs = selectedObjs().filter(o => !o.locked);
+  if (objs.length < 3) return;
+  const isH = dir.startsWith("h");
+  const edgeMode = dir.endsWith("edge");
+  objs.sort((a, b) => isH ? a.x - b.x : a.y - b.y);
+  const first = objs[0], last = objs[objs.length - 1];
+  if (isH) {
+    const left = first.x, right = last.x + last.w;
+    const totalW = objs.reduce((s, o) => s + o.w, 0);
+    const gap = (right - left - totalW) / (objs.length - 1);
+    let cursor = left;
+    for (let i = 0; i < objs.length; i++) {
+      const o = objs[i];
+      const targetX = edgeMode ? cursor : cursor + (gap - 0) / 2;
+      if (edgeMode) { moveObjectBy(o, cursor - o.x, 0); cursor += o.w + gap; }
+      else {
+        // 中心均分：讓中心點等距
+        const totalCenters = objs.length;
+        const firstCenter = first.x + first.w / 2;
+        const lastCenter = last.x + last.w / 2;
+        const step = (lastCenter - firstCenter) / (totalCenters - 1);
+        const target = firstCenter + step * i;
+        moveObjectBy(o, target - (o.x + o.w / 2), 0);
+      }
+    }
+  } else {
+    const top = first.y, bottom = last.y + last.h;
+    const totalH = objs.reduce((s, o) => s + o.h, 0);
+    const gap = (bottom - top - totalH) / (objs.length - 1);
+    let cursor = top;
+    for (let i = 0; i < objs.length; i++) {
+      const o = objs[i];
+      if (edgeMode) { moveObjectBy(o, 0, cursor - o.y); cursor += o.h + gap; }
+      else {
+        const firstCenter = first.y + first.h / 2;
+        const lastCenter = last.y + last.h / 2;
+        const step = (lastCenter - firstCenter) / (objs.length - 1);
+        const target = firstCenter + step * i;
+        moveObjectBy(o, 0, target - (o.y + o.h / 2));
+      }
+    }
+  }
+  pushHistory();
+  render();
+}
+$$(".dist-btn").forEach(b => b.addEventListener("click", () => distributeObjects(b.dataset.dist)));
+
+$("#btnApplyGap").addEventListener("click", () => {
+  const gap = parseFloat($("#gapInput").value);
+  if (isNaN(gap) || gap < 0) return;
+  const objs = selectedObjs().filter(o => !o.locked);
+  if (objs.length < 2) return;
+  // 水平方向間距
+  objs.sort((a, b) => a.x - b.x);
+  let cursor = objs[0].x;
+  for (const o of objs) {
+    moveObjectBy(o, cursor - o.x, 0);
+    cursor += o.w + gap;
+  }
+  pushHistory();
+  render();
+  toast("已套用水平均分間距");
+});
+
+/* ══════════════════════════════════════════════════════════
+   聯集（真正的幾何輪廓提取）
+   ══════════════════════════════════════════════════════════ */
+function uniteSelection() {
+  const objs = selectedObjs().filter(o => !o.locked && o.visible);
+  if (objs.length < 2) { toast("請選取至少兩個物件"); return; }
+  if (!objs.some(o => o.type !== "text")) { /* text 也可以 */ }
+
+  const bbox = unionBBox(objs);
+  const pad = 1;
+  const x0 = bbox.x - pad, y0 = bbox.y - pad;
+  const W = bbox.w + pad * 2, H = bbox.h + pad * 2;
+  if (W <= 0 || H <= 0) return;
+
+  const maxDim = 900;
+  const scale = Math.min(maxDim / Math.max(W, H), 4);
+  const pw = Math.max(2, Math.ceil(W * scale));
+  const ph = Math.max(2, Math.ceil(H * scale));
+
+  const cv = document.createElement("canvas");
+  cv.width = pw; cv.height = ph;
+  const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#fff";
+
+  for (const o of objs) {
+    try { renderObjectToCanvas(ctx, o, x0, y0, scale); }
+    catch (err) { console.error("render failed", o, err); }
+  }
+
+  const imgData = ctx.getImageData(0, 0, pw, ph);
+  const data = imgData.data;
+  const binary = new Uint8Array(pw * ph);
+  for (let i = 0; i < pw * ph; i++) {
+    if (data[i * 4 + 3] > 128 && data[i * 4] > 128) binary[i] = 1;
+  }
+
+  const contours = marchingSquares(binary, pw, ph);
+  if (!contours.length) { toast("無法合併，請檢查物件"); return; }
+
+  const simplified = contours.map(c => douglasPeucker(c, Math.max(0.6, 1 / scale)));
+
+  let d = "";
+  for (const contour of simplified) {
+    if (contour.length < 3) continue;
+    for (let i = 0; i < contour.length; i++) {
+      const [px_, py_] = contour[i];
+      const mx = px_ / scale + x0;
+      const my = py_ / scale + y0;
+      if (i === 0) d += `M ${n(mx)} ${n(my)} `;
+      else d += `L ${n(mx)} ${n(my)} `;
+    }
+    d += "Z ";
+  }
+  if (!d) { toast("無法產生輪廓"); return; }
+
+  // 建立新路徑物件（套用最前方物件屬性）
+  const front = objs[objs.length - 1];
+  const united = baseObj("path", "聯集");
+  united.points = parsePathDToPoints(d);
+  united.closed = true;
+  united.fill = front.fill;
+  united.stroke = front.stroke;
+  united.strokeWidth = front.strokeWidth;
+  united.opacity = front.opacity;
+  updateBBox(united);
+
+  // 移除原物件，加入合併結果
+  const ids = new Set(objs.map(o => o.id));
+  state.doc.objects = state.doc.objects.filter(o => !ids.has(o.id));
+  state.doc.objects.push(united);
+  state.selection.clear();
+  state.selection.add(united.id);
+  pushHistory();
+  render();
+  toast(`已聯集 ${objs.length} 個物件`);
+}
+
+function renderObjectToCanvas(ctx, o, ox, oy, scale) {
+  ctx.save();
+  ctx.fillStyle = "#fff";
+  const cx = (o.x + o.w / 2 - ox) * scale;
+  const cy = (o.y + o.h / 2 - oy) * scale;
+  if (o.rotation) {
+    ctx.translate(cx, cy);
+    ctx.rotate(o.rotation * Math.PI / 180);
+    ctx.translate(-cx, -cy);
+  }
+  switch (o.type) {
+    case "rect":
+      ctx.fillRect((o.x - ox) * scale, (o.y - oy) * scale, o.w * scale, o.h * scale);
+      break;
+    case "ellipse":
+      ctx.beginPath();
+      ctx.ellipse((o.x + o.w / 2 - ox) * scale, (o.y + o.h / 2 - oy) * scale,
+        Math.max(o.w / 2 * scale, 0.1), Math.max(o.h / 2 * scale, 0.1), 0, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    case "line": {
+      const thick = Math.max(o.strokeWidth || 0.3, 0.3) * scale;
+      const x1 = (o.x1 - ox) * scale, y1 = (o.y1 - oy) * scale;
+      const x2 = (o.x2 - ox) * scale, y2 = (o.y2 - oy) * scale;
+      const dx = x2 - x1, dy = y2 - y1;
+      const len = Math.hypot(dx, dy) || 1;
+      const nx = -dy / len * thick / 2, ny = dx / len * thick / 2;
+      ctx.beginPath();
+      ctx.moveTo(x1 + nx, y1 + ny);
+      ctx.lineTo(x2 + nx, y2 + ny);
+      ctx.lineTo(x2 - nx, y2 - ny);
+      ctx.lineTo(x1 - nx, y1 - ny);
+      ctx.closePath();
+      ctx.fill();
+      break;
+    }
+    case "path": {
+      ctx.save();
+      ctx.translate(-ox * scale, -oy * scale);
+      ctx.scale(scale, scale);
+      const p2d = new Path2D(pathToD(o.points, o.closed));
+      ctx.fill(p2d);
+      ctx.restore();
+      break;
+    }
+    case "text": {
+      ctx.save();
+      ctx.font = `600 ${o.fontSize * scale}px sans-serif`;
+      ctx.textBaseline = "alphabetic";
+      ctx.fillText(o.text, (o.x - ox) * scale, (o.y + o.fontSize * 0.82 - oy) * scale);
+      ctx.restore();
+      break;
+    }
+  }
+  ctx.restore();
+}
+
+/* marching squares 簡化版（16 種情況） */
+function marchingSquares(binary, w, h) {
+  const segs = [];
+  const at = (x, y) => (x < 0 || y < 0 || x >= w || y >= h) ? 0 : binary[y * w + x];
+  for (let y = 0; y < h - 1; y++) {
+    for (let x = 0; x < w - 1; x++) {
+      const tl = at(x, y), tr = at(x + 1, y), br = at(x + 1, y + 1), bl = at(x, y + 1);
+      const code = tl * 8 + tr * 4 + br * 2 + bl;
+      if (code === 0 || code === 15) continue;
+      const T = [x + 0.5, y], B = [x + 0.5, y + 1], L = [x, y + 0.5], R = [x + 1, y + 0.5];
+      switch (code) {
+        case 1: segs.push([L, B]); break;
+        case 2: segs.push([B, R]); break;
+        case 3: segs.push([L, R]); break;
+        case 4: segs.push([T, R]); break;
+        case 5: segs.push([L, T]); segs.push([B, R]); break;
+        case 6: segs.push([T, B]); break;
+        case 7: segs.push([L, T]); break;
+        case 8: segs.push([L, T]); break;
+        case 9: segs.push([T, B]); break;
+        case 10: segs.push([T, R]); segs.push([L, B]); break;
+        case 11: segs.push([T, R]); break;
+        case 12: segs.push([L, R]); break;
+        case 13: segs.push([B, R]); break;
+        case 14: segs.push([L, B]); break;
+        case 15: break;
+      }
+    }
+  }
+  if (!segs.length) return [];
+  const keyOf = (p) => `${p[0].toFixed(2)},${p[1].toFixed(2)}`;
+  const map = new Map();
+  segs.forEach((s, i) => {
+    for (const pt of s) {
+      const k = keyOf(pt);
+      if (!map.has(k)) map.set(k, []);
+      map.get(k).push(i);
+    }
+  });
+  const used = new Uint8Array(segs.length);
+  const contours = [];
+  for (let i = 0; i < segs.length; i++) {
+    if (used[i]) continue;
+    const contour = [];
+    let cur = i;
+    let pt = segs[i][0];
+    let guard = 0;
+    while (cur >= 0 && !used[cur] && guard++ < segs.length * 2) {
+      used[cur] = 1;
+      contour.push(pt);
+      const other = keyOf(segs[cur][0]) === keyOf(pt) ? segs[cur][1] : segs[cur][0];
+      pt = other;
+      const candidates = map.get(keyOf(pt)) || [];
+      let next = -1;
+      for (const c of candidates) if (!used[c]) { next = c; break; }
+      cur = next;
+    }
+    if (contour.length >= 3) contours.push(contour);
+  }
+  return contours;
+}
+
+function douglasPeucker(points, eps) {
+  if (points.length < 3) return points;
+  let maxD = 0, maxI = 0;
+  const a = points[0], b = points[points.length - 1];
+  const abx = b[0] - a[0], aby = b[1] - a[1];
+  const abLen = Math.hypot(abx, aby) || 1;
+  for (let i = 1; i < points.length - 1; i++) {
+    const p = points[i];
+    const t = ((p[0] - a[0]) * abx + (p[1] - a[1]) * aby) / (abLen * abLen);
+    const projX = a[0] + abx * clamp(t, 0, 1);
+    const projY = a[1] + aby * clamp(t, 0, 1);
+    const d = Math.hypot(p[0] - projX, p[1] - projY);
+    if (d > maxD) { maxD = d; maxI = i; }
+  }
+  if (maxD > eps) {
+    const left = douglasPeucker(points.slice(0, maxI + 1), eps);
+    const right = douglasPeucker(points.slice(maxI), eps);
+    return left.slice(0, -1).concat(right);
+  }
+  return [a, b];
+}
+
+/* 將 d 屬性解析為 points 陣列（用於合併結果） */
+function parsePathDToPoints(d) {
+  const pts = [];
+  const re = /([ML])\s*(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)/g;
+  let m;
+  while ((m = re.exec(d)) !== null) {
+    pts.push({ x: parseFloat(m[2]), y: parseFloat(m[3]), hIn: null, hOut: null });
+  }
+  return pts;
+}
+
+$("#pfUnite").addEventListener("click", uniteSelection);
+
+/* ══════════════════════════════════════════════════════════
+   填色/描邊色塊彈出面板
+   ══════════════════════════════════════════════════════════ */
+const SWATCH_COLORS = [
+  "#000000", "#404040", "#808080", "#BFBFBF", "#FFFFFF", "#E53935", "#FB8C00",
+  "#FFEB3B", "#43A047", "#00ACC1", "#1E88E5", "#8E24AA", "#F06292",
+  "#4A90D9", "#7CB342", "#FF9800", "#795548", "#607D8B", "#9E9E9E", "#FF5722", "#009688"
+];
+
+const swatchPopup = $("#swatchPopup");
+let swatchTarget = null;
+
+function openSwatchPopup(target, el) {
+  swatchTarget = target;
+  swatchPopup.innerHTML = "";
+  const grid = document.createElement("div");
+  grid.className = "swatch-grid";
+  for (const c of SWATCH_COLORS) {
+    const item = document.createElement("div");
+    item.className = "swatch-item";
+    item.style.background = c;
+    item.addEventListener("click", () => applySwatch(c));
+    grid.appendChild(item);
+  }
+  const none = document.createElement("div");
+  none.className = "swatch-item none";
+  none.title = "無";
+  none.addEventListener("click", () => applySwatch("none"));
+  grid.appendChild(none);
+  swatchPopup.appendChild(grid);
+
+  const row = document.createElement("div");
+  row.className = "custom-row";
+  const label = document.createElement("label");
+  label.textContent = "自訂顏色";
+  const ci = document.createElement("input");
+  ci.type = "color";
+  const cur = target === "fill" ? state.style.fill : state.style.stroke;
+  ci.value = (cur && cur !== "none") ? cur : "#000000";
+  ci.addEventListener("input", () => applySwatch(ci.value));
+  row.appendChild(label);
+  row.appendChild(ci);
+  swatchPopup.appendChild(row);
+
+  const r = el.getBoundingClientRect();
+  swatchPopup.style.left = (r.right + 8) + "px";
+  swatchPopup.style.top = Math.min(window.innerHeight - 200, r.top) + "px";
+  swatchPopup.classList.add("open");
+}
+function closeSwatchPopup() { swatchPopup.classList.remove("open"); swatchTarget = null; }
+
+function applySwatch(color) {
+  if (!swatchTarget) return;
+  if (swatchTarget === "fill") state.style.fill = color;
+  else state.style.stroke = color;
+  // 同步套用到選取物件
+  const objs = selectedObjs().filter(o => !o.locked);
+  if (objs.length) {
+    for (const o of objs) {
+      if (swatchTarget === "fill") o.fill = color;
+      else o.stroke = color;
+    }
+    pushHistory();
+    render();
+  } else {
+    updateSwatchUI();
+  }
+  closeSwatchPopup();
+}
+
+function updateSwatchUI() {
+  const f = $("#fillSwatch");
+  f.style.background = state.style.fill === "none" ? "#fff" : state.style.fill;
+  if (state.style.fill === "none") {
+    f.style.background = "linear-gradient(135deg,transparent 45%,#e33 45%,#e33 55%,transparent 55%),#fff";
+  }
+  const sf = $("#strokeSwatch").querySelector(".stroke-fill");
+  sf.style.background = state.style.stroke === "none" ? "#fff" : state.style.stroke;
+  if (state.style.stroke === "none") {
+    sf.style.background = "linear-gradient(135deg,transparent 45%,#e33 45%,#e33 55%,transparent 55%),#fff";
+  }
+}
+$("#fillSwatch").addEventListener("click", e => { e.stopPropagation(); openSwatchPopup("fill", $("#fillSwatch")); });
+$("#strokeSwatch").addEventListener("click", e => { e.stopPropagation(); openSwatchPopup("stroke", $("#strokeSwatch")); });
+window.addEventListener("pointerdown", e => {
+  if (!swatchPopup.contains(e.target) && !e.target.closest("#fillSwatch") && !e.target.closest("#strokeSwatch")) closeSwatchPopup();
+});
+
+/* ══════════════════════════════════════════════════════════
+   圖層操作按鈕
+   ══════════════════════════════════════════════════════════ */
+function moveLayer(dir) {
+  const ids = Array.from(state.selection);
+  if (!ids.length) return;
+  const objs = state.doc.objects;
+  if (dir > 0) {
+    for (let i = objs.length - 2; i >= 0; i--) {
+      if (ids.includes(objs[i].id) && !ids.includes(objs[i + 1].id)) [objs[i], objs[i + 1]] = [objs[i + 1], objs[i]];
+    }
+  } else {
+    for (let i = 1; i < objs.length; i++) {
+      if (ids.includes(objs[i].id) && !ids.includes(objs[i - 1].id)) [objs[i], objs[i - 1]] = [objs[i - 1], objs[i]];
+    }
+  }
+  pushHistory();
+  render();
+}
+function deleteSelection() {
+  const ids = state.selection;
+  if (!ids.size) return;
+  state.doc.objects = state.doc.objects.filter(o => !ids.has(o.id) || o.locked);
+  ids.clear();
+  pushHistory();
+  render();
+}
+function duplicateSelection() {
+  const objs = selectedObjs();
+  if (!objs.length) return;
+  const newIds = [];
+  for (const o of objs) {
+    const copy = JSON.parse(JSON.stringify(o));
+    copy.id = uid();
+    copy.name = o.name + " 複本";
+    if (copy.type === "line") { copy.x1 += 3; copy.y1 += 3; copy.x2 += 3; copy.y2 += 3; }
+    else if (copy.type === "path") {
+      for (const p of copy.points) {
+        p.x += 3; p.y += 3;
+        if (p.hIn) { p.hIn.x += 3; p.hIn.y += 3; }
+        if (p.hOut) { p.hOut.x += 3; p.hOut.y += 3; }
+      }
+    } else { copy.x += 3; copy.y += 3; }
+    updateBBox(copy);
+    state.doc.objects.push(copy);
+    newIds.push(copy.id);
+  }
+  state.selection.clear();
+  newIds.forEach(id => state.selection.add(id));
+  pushHistory();
+  render();
+}
+$("#btnUp").addEventListener("click", () => moveLayer(1));
+$("#btnDown").addEventListener("click", () => moveLayer(-1));
+$("#btnDup").addEventListener("click", duplicateSelection);
+$("#btnDel").addEventListener("click", deleteSelection);
+
+/* ══════════════════════════════════════════════════════════
+   鍵盤
+   ══════════════════════════════════════════════════════════ */
+window.addEventListener("keydown", e => {
+  const tag = (e.target.tagName || "").toLowerCase();
+  if (tag === "input" || tag === "textarea" || tag === "select") return;
+  if (e.code === "Space") { spaceDown = true; e.preventDefault(); return; }
+  const ctrl = e.ctrlKey || e.metaKey;
+  if (ctrl && e.key.toLowerCase() === "z") { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
+  if (ctrl && e.key.toLowerCase() === "y") { e.preventDefault(); redo(); return; }
+  if (ctrl && e.key.toLowerCase() === "d") { e.preventDefault(); duplicateSelection(); return; }
+  if (ctrl && e.key.toLowerCase() === "a") {
+    e.preventDefault();
+    state.selection.clear();
+    state.doc.objects.forEach(o => { if (!o.locked && o.visible) state.selection.add(o.id); });
+    render();
+    return;
+  }
+  if (ctrl) return;
+  switch (e.key) {
+    case "v": case "V": setTool("select"); break;
+    case "a": case "A": setTool("direct"); break;
+    case "r": case "R": setTool("rect"); break;
+    case "o": case "O":
+      if (e.shiftKey) setTool("artboard");
+      else setTool("ellipse");
+      break;
+    case "l": case "L": setTool("line"); break;
+    case "p": case "P": setTool("pen"); break;
+    case "t": case "T": setTool("text"); break;
+    case "h": case "H": setTool("hand"); break;
+    case "x": case "X": {
+      const tmp = state.style.fill;
+      state.style.fill = state.style.stroke;
+      state.style.stroke = tmp;
+      updateSwatchUI();
+      break;
+    }
+    case "Delete": case "Backspace": e.preventDefault(); deleteSelection(); break;
+    case "Escape":
+      if (pen) cancelPen();
+      else { state.selection.clear(); state.direct = { objectId: null, anchorIndex: -1, handleType: null }; render(); }
+      break;
+    case "Enter":
+      if (pen) finishPen();
+      break;
+    case "ArrowUp": e.preventDefault(); nudge(0, e.shiftKey ? 10 : 1); break;
+    case "ArrowDown": e.preventDefault(); nudge(0, e.shiftKey ? -10 : -1); break;
+    case "ArrowLeft": e.preventDefault(); nudge(e.shiftKey ? -10 : -1, 0); break;
+    case "ArrowRight": e.preventDefault(); nudge(e.shiftKey ? 10 : 1, 0); break;
+  }
+});
+window.addEventListener("keyup", e => { if (e.code === "Space") spaceDown = false; });
+function nudge(dx, dy) {
+  const objs = selectedObjs().filter(o => !o.locked);
+  if (!objs.length) return;
+  objs.forEach(o => moveObjectBy(o, dx, dy));
+  pushHistory();
+  render();
+}
+
+/* ══════════════════════════════════════════════════════════
+   匯出：SVG
+   ══════════════════════════════════════════════════════════ */
+function objectToSVGString(o) {
+  let attrs = `id="${o.id}"`;
+  if (o.rotation) attrs += ` transform="rotate(${n(o.rotation)} ${n(o.x + o.w / 2)} ${n(o.y + o.h / 2)})"`;
+  if (o.opacity !== undefined && o.opacity !== 1) attrs += ` opacity="${o.opacity}"`;
+  const fill = o.fill || "none";
+  const stroke = o.stroke || "none";
+  const sw = o.strokeWidth || 0;
+  const paint = `fill="${fill}" stroke="${stroke}" stroke-width="${n(sw)}" stroke-linejoin="round" stroke-linecap="round"`;
+  switch (o.type) {
+    case "rect": return `<rect ${attrs} x="${n(o.x)}" y="${n(o.y)}" width="${n(o.w)}" height="${n(o.h)}" ${paint}/>`;
+    case "ellipse": return `<ellipse ${attrs} cx="${n(o.x + o.w / 2)}" cy="${n(o.y + o.h / 2)}" rx="${n(o.w / 2)}" ry="${n(o.h / 2)}" ${paint}/>`;
+    case "line": return `<line ${attrs} x1="${n(o.x1)}" y1="${n(o.y1)}" x2="${n(o.x2)}" y2="${n(o.y2)}" stroke="${stroke}" stroke-width="${n(sw)}" stroke-linecap="round"/>`;
+    case "path": return `<path ${attrs} d="${pathToD(o.points, o.closed)}" ${paint}/>`;
+    case "text": return `<text ${attrs} x="${n(o.x)}" y="${n(o.y + o.fontSize * 0.82)}" font-family="${escapeXML(o.fontFamily)}" font-size="${n(o.fontSize)}" fill="${fill}">${escapeXML(o.text)}</text>`;
+  }
+  return "";
+}
+function buildSVGString() {
+  const ab = getActiveArtboard();
+  if (!ab) return "";
+  const W = ab.w, H = ab.h;
+  let body = "";
+  for (const o of state.doc.objects) {
+    if (!o.visible) continue;
+    const clone = JSON.parse(JSON.stringify(o));
+    moveObjectBy(clone, -ab.x, -ab.y);
+    body += "\n  " + objectToSVGString(clone);
+  }
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${W}mm" height="${H}mm" viewBox="0 0 ${W} ${H}">
+  <title>${escapeXML(state.doc.name)}</title>
+  <desc>Created with VectorPWA Studio</desc>${body}
+</svg>
+`;
+}
+
+/* ══════════════════════════════════════════════════════════
+   匯出：PDF
+   ══════════════════════════════════════════════════════════ */
+function pdfColor(hex) { return hexToRgb(hex).map(v => v.toFixed(4)).join(" "); }
+function pdfPathCmds(o) {
+  const L = [];
+  if (o.type === "rect") { L.push(`${n(o.x)} ${n(o.y + o.h)} ${n(o.w)} ${n(o.h)} re`); return L.join("\n"); }
+  if (o.type === "ellipse") {
+    const cx = o.x + o.w / 2, cy = o.y + o.h / 2, rx = o.w / 2, ry = o.h / 2;
+    const k = 0.5522847498307936, kx = rx * k, ky = ry * k;
+    L.push(`${n(cx + rx)} ${n(cy)} m`);
+    L.push(`${n(cx + rx)} ${n(cy + ky)} ${n(cx + kx)} ${n(cy + ry)} ${n(cx)} ${n(cy + ry)} c`);
+    L.push(`${n(cx - kx)} ${n(cy + ry)} ${n(cx - rx)} ${n(cy + ky)} ${n(cx - rx)} ${n(cy)} c`);
+    L.push(`${n(cx - rx)} ${n(cy - ky)} ${n(cx - kx)} ${n(cy - ry)} ${n(cx)} ${n(cy - ry)} c`);
+    L.push(`${n(cx + kx)} ${n(cy - ry)} ${n(cx + rx)} ${n(cy - ky)} ${n(cx + rx)} ${n(cy)} c`);
+    L.push("h");
+    return L.join("\n");
+  }
+  if (o.type === "line") { L.push(`${n(o.x1)} ${n(o.y1)} m`); L.push(`${n(o.x2)} ${n(o.y2)} l`); return L.join("\n"); }
+  if (o.type === "path") {
+    const pts = o.points;
+    if (!pts.length) return "";
+    L.push(`${n(pts[0].x)} ${n(pts[0].y)} m`);
+    const len = pts.length, end = o.closed ? len : len - 1;
+    for (let i = 0; i < end; i++) {
+      const a = pts[i], b = pts[(i + 1) % len];
+      if (a.hOut || b.hIn) {
+        const c1 = a.hOut || a, c2 = b.hIn || b;
+        L.push(`${n(c1.x)} ${n(c1.y)} ${n(c2.x)} ${n(c2.y)} ${n(b.x)} ${n(b.y)} c`);
+      } else L.push(`${n(b.x)} ${n(b.y)} l`);
+    }
+    if (o.closed) L.push("h");
+    return L.join("\n");
+  }
+  return "";
+}
+function pdfEscapeString(s) {
+  return String(s).replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)").replace(/[^\x20-\x7E]/g, "?");
+}
+function objectToPDF(o, pageHpt) {
+  const hasFill = o.fill && o.fill !== "none";
+  const hasStroke = o.stroke && o.stroke !== "none" && (o.strokeWidth || 0) > 0;
+  if (o.type === "text") {
+    if (!o.text) return "";
+    const out = [];
+    out.push("q");
+    if (o.rotation) {
+      const a = -o.rotation * Math.PI / 180;
+      const cos = Math.cos(a), sin = Math.sin(a);
+      const cx = (o.x + o.w / 2) * MM2PT;
+      const cy = pageHpt - (o.y + o.h / 2) * MM2PT;
+      const e = cx - cx * cos + cy * sin;
+      const f = cy - cx * sin - cy * cos;
+      out.push(`${cos.toFixed(5)} ${sin.toFixed(5)} ${(-sin).toFixed(5)} ${cos.toFixed(5)} ${e.toFixed(3)} ${f.toFixed(3)} cm`);
+    }
+    const tx = o.x * MM2PT;
+    const ty = pageHpt - (o.y + o.fontSize * 0.82) * MM2PT;
+    const size = o.fontSize * MM2PT;
+    out.push("BT");
+    out.push(`/F1 ${size.toFixed(3)} Tf`);
+    out.push(`${pdfColor(hasFill ? o.fill : "#000000")} rg`);
+    out.push(`${tx.toFixed(3)} ${ty.toFixed(3)} Td`);
+    out.push(`(${pdfEscapeString(o.text)}) Tj`);
+    out.push("ET");
+    out.push("Q");
+    return out.join("\n");
+  }
+  if (!hasFill && !hasStroke) return "";
+  const cmds = pdfPathCmds(o);
+  if (!cmds) return "";
+  const out = [];
+  out.push("q");
+  out.push(`${MM2PT.toFixed(6)} 0 0 ${(-MM2PT).toFixed(6)} 0 ${pageHpt.toFixed(3)} cm`);
+  if (o.rotation) {
+    const rad = o.rotation * Math.PI / 180;
+    const cos = Math.cos(rad), sin = Math.sin(rad);
+    const cx = o.x + o.w / 2, cy = o.y + o.h / 2;
+    const tx = cx - cx * cos + cy * sin;
+    const ty = cy - cx * sin - cy * cos;
+    out.push(`${cos.toFixed(5)} ${sin.toFixed(5)} ${(-sin).toFixed(5)} ${cos.toFixed(5)} ${tx.toFixed(3)} ${ty.toFixed(3)} cm`);
+  }
+  if (hasFill) out.push(`${pdfColor(o.fill)} rg`);
+  if (hasStroke) { out.push(`${pdfColor(o.stroke)} RG`); out.push(`${(o.strokeWidth || 0).toFixed(3)} w`); out.push("1 J"); out.push("1 j"); }
+  out.push(cmds);
+  out.push(hasFill && hasStroke ? "B" : hasFill ? "f" : "S");
+  out.push("Q");
+  return out.join("\n");
+}
+function buildPDFBlob() {
+  const ab = getActiveArtboard();
+  if (!ab) return null;
+  const Wpt = ab.w * MM2PT, Hpt = ab.h * MM2PT;
+  const parts = [];
+  for (const o of state.doc.objects) {
+    if (!o.visible) continue;
+    const clone = JSON.parse(JSON.stringify(o));
+    moveObjectBy(clone, -ab.x, -ab.y);
+    const s = objectToPDF(clone, Hpt);
+    if (s) parts.push(s);
+  }
+  const contentStream = parts.join("\n");
+  const objs = [];
+  objs.push("<< /Type /Catalog /Pages 2 0 R >>");
+  objs.push("<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
+  objs.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${Wpt.toFixed(3)} ${Hpt.toFixed(3)}] /Resources << /Font << /F1 5 0 R >> /ProcSet [/PDF /Text] >> /Contents 4 0 R >>`);
+  objs.push(`<< /Length ${contentStream.length} >>\nstream\n${contentStream}\nendstream`);
+  objs.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>");
+  let pdf = "%PDF-1.4\n%\xE2\xE3\xCF\xD3\n";
+  const offsets = [];
+  for (let i = 0; i < objs.length; i++) { offsets.push(pdf.length); pdf += `${i + 1} 0 obj\n${objs[i]}\nendobj\n`; }
+  const xrefPos = pdf.length;
+  pdf += `xref\n0 ${objs.length + 1}\n`;
+  pdf += "0000000000 65535 f \n";
+  for (const off of offsets) pdf += String(off).padStart(10, "0") + " 00000 n \n";
+  pdf += `trailer\n<< /Size ${objs.length + 1} /Root 1 0 R >>\nstartxref\n${xrefPos}\n%%EOF`;
+  const bytes = new Uint8Array(pdf.length);
+  for (let i = 0; i < pdf.length; i++) bytes[i] = pdf.charCodeAt(i) & 0xFF;
+  return new Blob([bytes], { type: "application/pdf" });
+}
+
+/* ══════════════════════════════════════════════════════════
+   下載
+   ══════════════════════════════════════════════════════════ */
+function download(blobOrString, filename, mime) {
+  const blob = blobOrString instanceof Blob ? blobOrString : new Blob([blobOrString], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+function safeName() { return (state.doc.name || "vectorpwa").replace(/[\\/:*?"<>|]/g, "_"); }
+
+$$("[data-act]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const act = btn.dataset.act;
+    if (act === "new") {
+      if (state.doc.objects.length && !confirm("建立新檔案？目前內容將被清除。")) return;
+      state.doc.objects = [];
+      state.selection.clear();
+      state.doc.guides = { horizontal: [], vertical: [] };
+      state.doc.artboards = [makeArtboard("工作區域 1", 0, 0, 210, 297)];
+      state.doc.activeArtboard = state.doc.artboards[0].id;
+      pen = null; drag = null;
+      state.direct = { objectId: null, anchorIndex: -1, handleType: null };
+      history.stack = []; history.index = -1;
+      pushHistory();
+      fitToScreen();
+      toast("已建立新畫板");
+      return;
+    }
+    if (act === "svg") { download(buildSVGString(), safeName() + ".svg", "image/svg+xml;charset=utf-8"); toast("SVG 已匯出（純向量）"); return; }
+    if (act === "pdf") {
+      const hasCJK = state.doc.objects.some(o => o.type === "text" && /[^\x00-\x7F]/.test(o.text || ""));
+      if (hasCJK && !confirm("PDF 匯出使用標準 Helvetica 字型，中文字元將以 ? 呈現。\n若需完整中文，請改用「匯出 SVG」。\n\n仍要繼續嗎？")) return;
+      const blob = buildPDFBlob();
+      if (blob) { download(blob, safeName() + ".pdf", "application/pdf"); toast("PDF 已匯出（純向量）"); }
+      return;
+    }
+  });
+});
+
+/* ══════════════════════════════════════════════════════════
+   面板收合
+   ══════════════════════════════════════════════════════════ */
+$$(".section").forEach(sec => {
+  const head = sec.querySelector(".section-head");
+  if (head) head.addEventListener("click", () => sec.classList.toggle("collapsed"));
+});
+
+/* ══════════════════════════════════════════════════════════
+   Resize
+   ══════════════════════════════════════════════════════════ */
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => render(), 80);
+});
+
+/* ══════════════════════════════════════════════════════════
+   初始化
+   ══════════════════════════════════════════════════════════ */
+function init() {
+  state.doc.artboards = [makeArtboard("工作區域 1", 0, 0, 210, 297)];
+  state.doc.activeArtboard = state.doc.artboards[0].id;
+  updateSwatchUI();
+  setTool("select");
+  pushHistory();
+  fitToScreen();
+  setTimeout(() => {
+    if (state.doc.objects.length === 0) toast("提示：按 R 畫矩形、P 用鋼筆、T 加文字、A 編輯錨點");
+  }, 700);
+}
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
+
+init();
+
+})();
+</script>
+</body>
+</html>
