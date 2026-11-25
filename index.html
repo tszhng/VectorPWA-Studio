@@ -22,7 +22,6 @@ input,select,textarea{font-family:inherit;font-size:inherit}
 #app{display:grid;grid-template-rows:42px 1fr;height:100vh;height:100dvh}
 #main{display:grid;grid-template-columns:46px 1fr 272px;min-height:0}
 
-/* topbar */
 #topbar{display:flex;align-items:center;gap:14px;padding:0 12px;background:var(--panel);border-bottom:1px solid var(--border);flex:none}
 .brand{display:flex;align-items:center;gap:8px;font-weight:600;letter-spacing:.3px;color:#e8e8e8}
 .brand svg{width:20px;height:20px}
@@ -38,7 +37,6 @@ input,select,textarea{font-family:inherit;font-size:inherit}
 .zoom-ctrl button.wide{width:auto;padding:0 10px}
 #zoomLabel{min-width:48px;text-align:center;font-variant-numeric:tabular-nums}
 
-/* tools */
 #tools{background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;overflow-y:auto;overflow-x:visible;position:relative}
 .tool{width:34px;height:34px;border-radius:5px;display:grid;place-items:center;color:#a8a8a8;position:relative;transition:.12s;flex:none}
 .tool:hover{background:var(--panel3);color:#e8e8e8}
@@ -63,7 +61,6 @@ input,select,textarea{font-family:inherit;font-size:inherit}
 .stroke-swatch .stroke-fill{position:absolute;inset:0;border-radius:3px}
 .fill-swatch:hover,.stroke-swatch:hover{transform:scale(1.1);z-index:5}
 
-/* stage */
 #stage{position:relative;overflow:hidden;background:var(--stage);min-width:0;min-height:0}
 #rulerH{position:absolute;left:20px;top:0;right:0;height:20px;background:var(--ruler-bg);border-bottom:1px solid var(--border);cursor:ns-resize;z-index:10}
 #rulerV{position:absolute;left:0;top:20px;bottom:0;width:20px;background:var(--ruler-bg);border-right:1px solid var(--border);cursor:ew-resize;z-index:10}
@@ -72,7 +69,6 @@ input,select,textarea{font-family:inherit;font-size:inherit}
 #world{position:absolute;inset:0;width:100%;height:100%;display:block}
 #hint{position:absolute;left:14px;bottom:12px;padding:5px 10px;border-radius:5px;background:rgba(0,0,0,.6);color:#bbb;font-size:11px;pointer-events:none;backdrop-filter:blur(4px);white-space:nowrap;z-index:20}
 
-/* panels */
 #side{background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;min-height:0;overflow:hidden}
 .section{border-bottom:1px solid var(--border);display:flex;flex-direction:column;min-height:0;flex:none}
 .section.grow{flex:1;min-height:0}
@@ -95,10 +91,8 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 input[type=color]{width:26px;height:22px;padding:0;border:1px solid var(--border);border-radius:4px;background:none;cursor:pointer;flex:none}
 .mini{padding:4px 9px;border-radius:4px;background:var(--panel3);color:#bbb;font-size:11px;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:4px;transition:.1s}
 .mini:hover{background:#424242;color:#fff}
-.mini.on{background:var(--accent-dim);color:#ffce80}
 .mini:disabled{opacity:.35;cursor:not-allowed}
 
-/* artboards */
 #artboardList{list-style:none;margin:0;padding:0}
 .ab-item{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-size:11.5px;margin-bottom:2px}
 .ab-item:hover{background:var(--panel2)}
@@ -107,7 +101,6 @@ input[type=color]{width:26px;height:22px;padding:0;border:1px solid var(--border
 .ab-item .ab-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ab-item .ab-size{font-size:10px;color:#777;font-variant-numeric:tabular-nums}
 
-/* align */
 .align-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;margin-bottom:8px}
 .align-btn{height:30px;border-radius:4px;background:var(--panel3);display:grid;place-items:center;color:#aaa;transition:.1s}
 .align-btn:hover:not(:disabled){background:#424242;color:#fff}
@@ -118,7 +111,6 @@ input[type=color]{width:26px;height:22px;padding:0;border:1px solid var(--border
 .dist-btn:hover:not(:disabled){background:#424242;color:#fff}
 .dist-btn:disabled{opacity:.35;cursor:not-allowed}
 
-/* pathfinder */
 .pf-row{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 .pf-btn{height:36px;border-radius:4px;background:var(--panel3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#aaa;font-size:9.5px;transition:.1s;padding:2px}
 .pf-btn:hover:not(:disabled){background:#424242;color:#fff}
@@ -127,7 +119,6 @@ input[type=color]{width:26px;height:22px;padding:0;border:1px solid var(--border
 .pf-btn.primary{background:var(--accent-dim);color:#ffce80}
 .pf-btn.primary:hover:not(:disabled){background:#a86a00;color:#ffe0a3}
 
-/* layers */
 #layerList{list-style:none;margin:0;padding:2px 0;flex:1;overflow-y:auto;min-height:0}
 .layer-item{display:flex;align-items:center;gap:6px;padding:4px 10px;cursor:pointer;border-left:3px solid transparent;font-size:11.5px}
 .layer-item:hover{background:var(--panel2)}
@@ -140,7 +131,6 @@ input[type=color]{width:26px;height:22px;padding:0;border:1px solid var(--border
 .layer-item .type{font-size:10px;color:#666;flex:none}
 .layer-tools{display:flex;gap:4px;padding:7px 10px;border-top:1px solid var(--border);flex:none}
 
-/* swatch popup */
 .swatch-popup{position:fixed;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:9999;display:none;width:196px}
 .swatch-popup.open{display:block}
 .swatch-popup .swatch-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px}
@@ -151,7 +141,6 @@ input[type=color]{width:26px;height:22px;padding:0;border:1px solid var(--border
 .swatch-popup .custom-row{display:flex;align-items:center;gap:6px;padding-top:6px;border-top:1px solid var(--border)}
 .swatch-popup .custom-row label{flex:1;color:var(--dim);font-size:11px}
 
-/* text editor */
 .text-editor{position:fixed;z-index:9998;background:rgba(255,255,255,.02);border:1px dashed var(--accent);outline:none;resize:none;padding:0;line-height:1.2;overflow:hidden;white-space:pre;color:#000;font-family:sans-serif;box-shadow:0 0 0 3px rgba(255,154,0,.12)}
 
 #toast{position:fixed;left:50%;bottom:36px;transform:translate(-50%,20px);background:#111;color:#eee;padding:9px 18px;border-radius:6px;border:1px solid #3a3a3a;opacity:0;pointer-events:none;transition:.25s;z-index:99999;font-size:12px;box-shadow:0 8px 30px rgba(0,0,0,.5);max-width:80vw;text-align:center}
@@ -162,15 +151,28 @@ input[type=color]{width:26px;height:22px;padding:0;border:1px solid var(--border
 ::-webkit-scrollbar-thumb{background:#4a4a4a;border-radius:5px;border:2px solid var(--panel)}
 ::-webkit-scrollbar-thumb:hover{background:#5e5e5e}
 
-/* pdf import overlay */
 #importOverlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:99990;display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
 #importOverlay.open{display:flex}
-#importBox{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:24px 28px;min-width:320px;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,.6)}
+#importBox{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:24px 28px;min-width:340px;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,.6)}
 #importBox .title{font-size:14px;font-weight:600;color:#eee;margin-bottom:14px}
 #importBox .sub{font-size:11.5px;color:var(--dim);margin-bottom:18px;line-height:1.6}
 #importBox .bar{width:100%;height:5px;background:#1a1a1a;border-radius:3px;overflow:hidden;margin-bottom:8px}
 #importBox .bar-inner{height:100%;background:var(--accent);width:0%;transition:width .2s}
 #importBox .status{font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums}
+
+#pdfModeOverlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:99991;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+#pdfModeOverlay.open{display:flex}
+#pdfModeBox{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px;min-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.7)}
+#pdfModeBox .title{font-size:15px;font-weight:600;color:#eee;margin-bottom:6px;text-align:center}
+#pdfModeBox .desc{font-size:11.5px;color:var(--dim);margin-bottom:16px;text-align:center}
+#pdfModeBox .mode-btn{display:block;width:100%;text-align:left;padding:12px 14px;border-radius:6px;background:var(--panel3);border:1px solid var(--border);margin-bottom:8px;transition:.12s;cursor:pointer}
+#pdfModeBox .mode-btn:hover{background:#3d3d3d;border-color:#555}
+#pdfModeBox .mode-btn.primary{background:var(--accent-dim);border-color:#a86a00}
+#pdfModeBox .mode-btn.primary:hover{background:#a86a00}
+#pdfModeBox .mode-title{font-size:12.5px;font-weight:600;color:#eee;margin-bottom:3px}
+#pdfModeBox .mode-btn.primary .mode-title{color:#ffe0a3}
+#pdfModeBox .mode-sub{font-size:10.5px;color:#999;line-height:1.5}
+#pdfModeBox .btn-row{display:flex;justify-content:flex-end;margin-top:8px}
 </style>
 </head>
 <body>
@@ -190,9 +192,9 @@ input[type=color]{width:26px;height:22px;padding:0;border:1px solid var(--border
     </div>
     <div class="spacer"></div>
     <div class="zoom-ctrl">
-      <button data-zoom="out" title="縮小">−</button>
+      <button data-zoom="out">−</button>
       <span id="zoomLabel">100%</span>
-      <button data-zoom="in" title="放大">+</button>
+      <button data-zoom="in">+</button>
       <button class="wide" data-zoom="fit">符合</button>
       <button class="wide" data-zoom="100">1:1</button>
     </div>
@@ -229,7 +231,6 @@ input[type=color]{width:26px;height:22px;padding:0;border:1px solid var(--border
       <button class="tool" data-tool="hand" data-tip="平移工具 (H / 空白鍵)">
         <svg viewBox="0 0 24 24"><path d="M8 12V5.5a1.5 1.5 0 0 1 3 0V11m0-5.5a1.5 1.5 0 0 1 3 0V11m0-4a1.5 1.5 0 0 1 3 0v6.5m0-3a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6v-1.5a1.5 1.5 0 0 1 3 0"/></svg>
       </button>
-
       <div class="color-swatches">
         <div class="swatch-wrap">
           <div class="fill-swatch" id="fillSwatch" title="填色 (X 切換)"></div>
@@ -295,18 +296,18 @@ input[type=color]{width:26px;height:22px;padding:0;border:1px solid var(--border
         <div class="section-head"><span>對齊</span><svg class="caret" width="10" height="10" viewBox="0 0 10 10"><path d="M2 4 L5 7 L8 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
         <div class="section-body">
           <div class="align-grid">
-            <button class="align-btn" data-align="left" title="水平靠左"><svg viewBox="0 0 24 24"><path d="M4 4 V20"/><rect x="7" y="7" width="9" height="4" rx="1"/><rect x="7" y="14" width="6" height="4" rx="1"/></svg></button>
-            <button class="align-btn" data-align="hcenter" title="水平置中"><svg viewBox="0 0 24 24"><path d="M12 4 V20"/><rect x="7" y="7" width="10" height="4" rx="1"/><rect x="9" y="14" width="6" height="4" rx="1"/></svg></button>
-            <button class="align-btn" data-align="right" title="水平靠右"><svg viewBox="0 0 24 24"><path d="M20 4 V20"/><rect x="8" y="7" width="9" height="4" rx="1"/><rect x="11" y="14" width="6" height="4" rx="1"/></svg></button>
-            <button class="align-btn" data-align="top" title="垂直靠上"><svg viewBox="0 0 24 24"><path d="M4 4 H20"/><rect x="7" y="7" width="4" height="9" rx="1"/><rect x="14" y="7" width="4" height="6" rx="1"/></svg></button>
-            <button class="align-btn" data-align="vcenter" title="垂直置中"><svg viewBox="0 0 24 24"><path d="M4 12 H20"/><rect x="7" y="7" width="4" height="10" rx="1"/><rect x="14" y="9" width="4" height="6" rx="1"/></svg></button>
-            <button class="align-btn" data-align="bottom" title="垂直靠下"><svg viewBox="0 0 24 24"><path d="M4 20 H20"/><rect x="7" y="8" width="4" height="9" rx="1"/><rect x="14" y="11" width="4" height="6" rx="1"/></svg></button>
+            <button class="align-btn" data-align="left"><svg viewBox="0 0 24 24"><path d="M4 4 V20"/><rect x="7" y="7" width="9" height="4" rx="1"/><rect x="7" y="14" width="6" height="4" rx="1"/></svg></button>
+            <button class="align-btn" data-align="hcenter"><svg viewBox="0 0 24 24"><path d="M12 4 V20"/><rect x="7" y="7" width="10" height="4" rx="1"/><rect x="9" y="14" width="6" height="4" rx="1"/></svg></button>
+            <button class="align-btn" data-align="right"><svg viewBox="0 0 24 24"><path d="M20 4 V20"/><rect x="8" y="7" width="9" height="4" rx="1"/><rect x="11" y="14" width="6" height="4" rx="1"/></svg></button>
+            <button class="align-btn" data-align="top"><svg viewBox="0 0 24 24"><path d="M4 4 H20"/><rect x="7" y="7" width="4" height="9" rx="1"/><rect x="14" y="7" width="4" height="6" rx="1"/></svg></button>
+            <button class="align-btn" data-align="vcenter"><svg viewBox="0 0 24 24"><path d="M4 12 H20"/><rect x="7" y="7" width="4" height="10" rx="1"/><rect x="14" y="9" width="4" height="6" rx="1"/></svg></button>
+            <button class="align-btn" data-align="bottom"><svg viewBox="0 0 24 24"><path d="M4 20 H20"/><rect x="7" y="8" width="4" height="9" rx="1"/><rect x="14" y="11" width="4" height="6" rx="1"/></svg></button>
           </div>
           <div class="dist-grid">
-            <button class="dist-btn" data-dist="h" title="水平均分（中心）">水平均分</button>
-            <button class="dist-btn" data-dist="v" title="垂直均分（中心）">垂直均分</button>
-            <button class="dist-btn" data-dist="h-edge" title="水平均分（邊緣）">水平間距</button>
-            <button class="dist-btn" data-dist="v-edge" title="垂直均分（邊緣）">垂直間距</button>
+            <button class="dist-btn" data-dist="h">水平均分</button>
+            <button class="dist-btn" data-dist="v">垂直均分</button>
+            <button class="dist-btn" data-dist="h-edge">水平間距</button>
+            <button class="dist-btn" data-dist="v-edge">垂直間距</button>
           </div>
           <div style="display:flex;gap:4px;margin-top:8px;align-items:center">
             <label style="font-size:11px;color:var(--dim);flex:none">間距 mm</label>
@@ -330,10 +331,10 @@ input[type=color]{width:26px;height:22px;padding:0;border:1px solid var(--border
         <div class="section-body" style="padding:0;overflow:hidden;display:flex;flex-direction:column">
           <ul id="layerList"></ul>
           <div class="layer-tools">
-            <button class="mini" id="btnUp" title="上移一層">上移</button>
-            <button class="mini" id="btnDown" title="下移一層">下移</button>
-            <button class="mini" id="btnDup" title="複製 (Ctrl+D)">複製</button>
-            <button class="mini" id="btnDel" title="刪除 (Del)">刪除</button>
+            <button class="mini" id="btnUp">上移</button>
+            <button class="mini" id="btnDown">下移</button>
+            <button class="mini" id="btnDup">複製</button>
+            <button class="mini" id="btnDel">刪除</button>
           </div>
         </div>
       </div>
@@ -345,13 +346,28 @@ input[type=color]{width:26px;height:22px;padding:0;border:1px solid var(--border
 <div id="toast"></div>
 <input type="file" id="pdfFileInput" accept=".pdf,application/pdf" hidden>
 
-<!-- PDF 導入進度 -->
 <div id="importOverlay">
   <div id="importBox">
     <div class="title">正在導入 PDF</div>
     <div class="sub" id="importSub">正在載入解析庫...</div>
     <div class="bar"><div class="bar-inner" id="importBar"></div></div>
     <div class="status" id="importStatus">0 / 0</div>
+  </div>
+</div>
+
+<div id="pdfModeOverlay">
+  <div id="pdfModeBox">
+    <div class="title">導入 PDF</div>
+    <div class="desc">請選擇導入方式</div>
+    <button id="pdfModeVector" class="mode-btn primary">
+      <div class="mode-title">矢量導入（可編輯）</div>
+      <div class="mode-sub">提取 PDF 內的路徑與文字，轉為可選取、可修改的物件。可能丟失圖片、漸層、透明度與裁剪效果。</div>
+    </button>
+    <button id="pdfModeImage" class="mode-btn">
+      <div class="mode-title">圖片導入（高保真）</div>
+      <div class="mode-sub">每頁渲染為高解析度圖片，完全保留原始外觀，但內容不可直接編輯。</div>
+    </button>
+    <div class="btn-row"><button id="pdfModeCancel" class="mini">取消</button></div>
   </div>
 </div>
 
@@ -405,7 +421,7 @@ function toast(msg) {
   el.textContent = msg;
   el.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove("show"), 2400);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -425,8 +441,6 @@ const state = {
   direct: { objectId: null, anchorIndex: -1, handleType: null },
   style: { fill: "#4A90D9", stroke: "#1A1A1A", strokeWidth: 0.4, fontSize: 12, fontFamily: "sans-serif" }
 };
-
-// 圖像資料獨立快取（避免歷史快照包含巨大 base64）
 const imageCache = new Map();
 
 const canvas = $("#world");
@@ -513,19 +527,16 @@ function toDoc(e) {
 }
 
 /* ══════════════════════════════════════════════════════════
-   歷史（圖像資料以 imageCache 隔離）
+   歷史
    ══════════════════════════════════════════════════════════ */
 const history = { stack: [], index: -1 };
-
 function snapshot() {
   return JSON.stringify({
     artboards: state.doc.artboards,
     activeArtboard: state.doc.activeArtboard,
     objects: state.doc.objects.map(o => {
       if (o.type === 'image' && o.src && o.src !== '__IMG__') {
-        if (!imageCache.has(o.id)) {
-          imageCache.set(o.id, { src: o.src, pxW: o._pxW, pxH: o._pxH });
-        }
+        if (!imageCache.has(o.id)) imageCache.set(o.id, { src: o.src, pxW: o._pxW, pxH: o._pxH });
         return Object.assign({}, o, { src: '__IMG__' });
       }
       return o;
@@ -596,28 +607,17 @@ function render() {
       fill: "#ffffff",
       stroke: isActive ? "#ff9a00" : "#7a7a7a",
       "stroke-width": (isActive ? 1.5 : 0.8) / z,
-      "data-ab": ab.id,
-      style: "pointer-events:all;cursor:default"
+      "data-ab": ab.id, style: "pointer-events:all;cursor:default"
     }, artboardsLayer);
   }
 
   guidesLayer.innerHTML = "";
   const gz = 1 / z;
   for (const g of state.doc.guides.horizontal) {
-    svgEl("line", {
-      x1: -100000, y1: g.y, x2: 100000, y2: g.y,
-      stroke: "#4aa8ff", "stroke-width": gz,
-      "stroke-dasharray": `${4 * gz} ${3 * gz}`,
-      "pointer-events": "none"
-    }, guidesLayer);
+    svgEl("line", { x1: -100000, y1: g.y, x2: 100000, y2: g.y, stroke: "#4aa8ff", "stroke-width": gz, "stroke-dasharray": `${4 * gz} ${3 * gz}`, "pointer-events": "none" }, guidesLayer);
   }
   for (const g of state.doc.guides.vertical) {
-    svgEl("line", {
-      x1: g.x, y1: -100000, x2: g.x, y2: 100000,
-      stroke: "#4aa8ff", "stroke-width": gz,
-      "stroke-dasharray": `${4 * gz} ${3 * gz}`,
-      "pointer-events": "none"
-    }, guidesLayer);
+    svgEl("line", { x1: g.x, y1: -100000, x2: g.x, y2: 100000, stroke: "#4aa8ff", "stroke-width": gz, "stroke-dasharray": `${4 * gz} ${3 * gz}`, "pointer-events": "none" }, guidesLayer);
   }
 
   contentLayer.innerHTML = "";
@@ -704,25 +704,18 @@ const CURSORS = { nw:"nwse-resize", se:"nwse-resize", ne:"nesw-resize", sw:"nesw
 function renderOverlay() {
   const z = state.zoom;
   const objs = selectedObjs();
-
   if (pen) renderPenPreview();
-
   if (state.tool === "direct" && state.direct.objectId) {
     const o = findObj(state.direct.objectId);
     if (o && o.type === "path") renderPathAnchors(o);
     else if (o) renderObjectBBox(o);
     return;
   }
-
   if (!objs.length) {
     if (state.tool === "artboard") renderArtboardHandles();
     return;
   }
-
-  if (state.tool === "artboard") {
-    renderArtboardHandles();
-    return;
-  }
+  if (state.tool === "artboard") { renderArtboardHandles(); return; }
 
   const b = unionBBox(objs);
   svgEl("rect", {
@@ -746,25 +739,14 @@ function renderOverlay() {
     }
   }
 }
-
 function renderObjectBBox(o) {
   const z = state.zoom;
-  svgEl("rect", {
-    x: n(o.x), y: n(o.y), width: n(o.w), height: n(o.h),
-    fill: "none", stroke: "#ff9a00", "stroke-width": 1 / z,
-    "pointer-events": "none"
-  }, overlayLayer);
+  svgEl("rect", { x: n(o.x), y: n(o.y), width: n(o.w), height: n(o.h), fill: "none", stroke: "#ff9a00", "stroke-width": 1 / z, "pointer-events": "none" }, overlayLayer);
 }
-
 function renderPathAnchors(o) {
   const z = state.zoom;
   const r = 3.5 / z;
-  svgEl("path", {
-    d: pathToD(o.points, o.closed),
-    fill: "none", stroke: "rgba(255,154,0,.5)", "stroke-width": 0.8 / z,
-    "pointer-events": "none"
-  }, overlayLayer);
-
+  svgEl("path", { d: pathToD(o.points, o.closed), fill: "none", stroke: "rgba(255,154,0,.5)", "stroke-width": 0.8 / z, "pointer-events": "none" }, overlayLayer);
   for (let i = 0; i < o.points.length; i++) {
     const p = o.points[i];
     const isSel = state.direct.anchorIndex === i;
@@ -772,29 +754,15 @@ function renderPathAnchors(o) {
       const h = p[hKey];
       if (!h) continue;
       svgEl("line", { x1: n(p.x), y1: n(p.y), x2: n(h.x), y2: n(h.y), stroke: "#ff9a00", "stroke-width": 0.8 / z, "pointer-events": "none" }, overlayLayer);
-      svgEl("circle", {
-        cx: n(h.x), cy: n(h.y), r: n(2.4 / z),
-        fill: "#ff9a00",
-        "data-anchor": i, "data-handle": hKey, "pointer-events": "all",
-        style: "cursor:move"
-      }, overlayLayer);
+      svgEl("circle", { cx: n(h.x), cy: n(h.y), r: n(2.4 / z), fill: "#ff9a00", "data-anchor": i, "data-handle": hKey, "pointer-events": "all", style: "cursor:move" }, overlayLayer);
     }
     if (i === 0 && !o.closed && o.points.length > 1) {
-      svgEl("rect", {
-        x: n(p.x - r), y: n(p.y - r), width: n(r * 2), height: n(r * 2),
-        fill: isSel ? "#ff9a00" : "#fff", stroke: "#ff9a00", "stroke-width": 1.2 / z,
-        "data-anchor": i, "pointer-events": "all", style: "cursor:move"
-      }, overlayLayer);
+      svgEl("rect", { x: n(p.x - r), y: n(p.y - r), width: n(r * 2), height: n(r * 2), fill: isSel ? "#ff9a00" : "#fff", stroke: "#ff9a00", "stroke-width": 1.2 / z, "data-anchor": i, "pointer-events": "all", style: "cursor:move" }, overlayLayer);
     } else {
-      svgEl("circle", {
-        cx: n(p.x), cy: n(p.y), r: n(r),
-        fill: isSel ? "#ff9a00" : "#fff", stroke: "#ff9a00", "stroke-width": 1.2 / z,
-        "data-anchor": i, "pointer-events": "all", style: "cursor:move"
-      }, overlayLayer);
+      svgEl("circle", { cx: n(p.x), cy: n(p.y), r: n(r), fill: isSel ? "#ff9a00" : "#fff", stroke: "#ff9a00", "stroke-width": 1.2 / z, "data-anchor": i, "pointer-events": "all", style: "cursor:move" }, overlayLayer);
     }
   }
 }
-
 function renderArtboardHandles() {
   const z = state.zoom;
   const ab = getActiveArtboard();
@@ -807,41 +775,23 @@ function renderArtboardHandles() {
   };
   for (const dir in pos) {
     const [hx, hy] = pos[dir];
-    svgEl("rect", {
-      x: n(hx - hs / 2), y: n(hy - hs / 2), width: n(hs), height: n(hs),
-      fill: "#ffffff", stroke: "#ff9a00", "stroke-width": 1.3 / z,
-      "data-ab-handle": dir, "pointer-events": "all", style: `cursor:${CURSORS[dir]}`
-    }, overlayLayer);
+    svgEl("rect", { x: n(hx - hs / 2), y: n(hy - hs / 2), width: n(hs), height: n(hs), fill: "#ffffff", stroke: "#ff9a00", "stroke-width": 1.3 / z, "data-ab-handle": dir, "pointer-events": "all", style: `cursor:${CURSORS[dir]}` }, overlayLayer);
   }
 }
-
 function renderPenPreview() {
   const z = state.zoom;
   const pts = pen.points.slice();
-  svgEl("path", {
-    d: pathToD(pts, !!pen.closed),
-    fill: pen.closed ? "rgba(255,154,0,.12)" : "none",
-    stroke: "#ff9a00", "stroke-width": 1.2 / z, "pointer-events": "none"
-  }, overlayLayer);
-
+  svgEl("path", { d: pathToD(pts, !!pen.closed), fill: pen.closed ? "rgba(255,154,0,.12)" : "none", stroke: "#ff9a00", "stroke-width": 1.2 / z, "pointer-events": "none" }, overlayLayer);
   if (!pen.closed && pts.length) {
     const last = pts[pts.length - 1];
-    svgEl("line", {
-      x1: n(last.x), y1: n(last.y), x2: n(mouseDoc.x), y2: n(mouseDoc.y),
-      stroke: "#ff9a00", "stroke-width": 1 / z, "stroke-dasharray": `${3 / z} ${3 / z}`,
-      "pointer-events": "none"
-    }, overlayLayer);
+    svgEl("line", { x1: n(last.x), y1: n(last.y), x2: n(mouseDoc.x), y2: n(mouseDoc.y), stroke: "#ff9a00", "stroke-width": 1 / z, "stroke-dasharray": `${3 / z} ${3 / z}`, "pointer-events": "none" }, overlayLayer);
   }
   const r = 3.5 / z;
-  for (const p of pts) {
-    svgEl("circle", { cx: n(p.x), cy: n(p.y), r: n(r), fill: "#fff", stroke: "#ff9a00", "stroke-width": 1.2 / z, "pointer-events": "none" }, overlayLayer);
-  }
-  for (const p of pts) {
-    for (const h of [p.hIn, p.hOut]) {
-      if (!h) continue;
-      svgEl("line", { x1: n(p.x), y1: n(p.y), x2: n(h.x), y2: n(h.y), stroke: "#ff9a00", "stroke-width": 0.8 / z, "pointer-events": "none" }, overlayLayer);
-      svgEl("circle", { cx: n(h.x), cy: n(h.y), r: n(2.6 / z), fill: "#ff9a00", "pointer-events": "none" }, overlayLayer);
-    }
+  for (const p of pts) svgEl("circle", { cx: n(p.x), cy: n(p.y), r: n(r), fill: "#fff", stroke: "#ff9a00", "stroke-width": 1.2 / z, "pointer-events": "none" }, overlayLayer);
+  for (const p of pts) for (const h of [p.hIn, p.hOut]) {
+    if (!h) continue;
+    svgEl("line", { x1: n(p.x), y1: n(p.y), x2: n(h.x), y2: n(h.y), stroke: "#ff9a00", "stroke-width": 0.8 / z, "pointer-events": "none" }, overlayLayer);
+    svgEl("circle", { cx: n(h.x), cy: n(h.y), r: n(2.6 / z), fill: "#ff9a00", "pointer-events": "none" }, overlayLayer);
   }
 }
 
@@ -885,10 +835,7 @@ function drawRulers() {
   for (let m = subStartX; m <= endMmX; m += subStep) {
     const px = (m - originMmX) * state.zoom + originPxX;
     const isMajor = Math.abs(m / step - Math.round(m / step)) < 0.001;
-    ctxH.beginPath();
-    ctxH.moveTo(px, isMajor ? hh * 0.3 : hh * 0.65);
-    ctxH.lineTo(px, hh);
-    ctxH.stroke();
+    ctxH.beginPath(); ctxH.moveTo(px, isMajor ? hh * 0.3 : hh * 0.65); ctxH.lineTo(px, hh); ctxH.stroke();
   }
   const majorStartX = Math.ceil(startMmX / step) * step;
   for (let m = majorStartX; m <= endMmX; m += step) {
@@ -904,13 +851,9 @@ function drawRulers() {
   for (let m = subStartY; m <= endMmY; m += subStep) {
     const py = (m - originMmY) * state.zoom + originPxY;
     const isMajor = Math.abs(m / step - Math.round(m / step)) < 0.001;
-    ctxV.beginPath();
-    ctxV.moveTo(isMajor ? wv * 0.3 : wv * 0.65, py);
-    ctxV.lineTo(wv, py);
-    ctxV.stroke();
+    ctxV.beginPath(); ctxV.moveTo(isMajor ? wv * 0.3 : wv * 0.65, py); ctxV.lineTo(wv, py); ctxV.stroke();
   }
-  ctxV.save();
-  ctxV.translate(2, 0); ctxV.rotate(Math.PI / 2); ctxV.textAlign = "right";
+  ctxV.save(); ctxV.translate(2, 0); ctxV.rotate(Math.PI / 2); ctxV.textAlign = "right";
   const majorStartY = Math.ceil(startMmY / step) * step;
   for (let m = majorStartY; m <= endMmY; m += step) {
     const py = (m - originMmY) * state.zoom + originPxY;
@@ -920,7 +863,7 @@ function drawRulers() {
 }
 
 /* ══════════════════════════════════════════════════════════
-   工作區域面板
+   面板
    ══════════════════════════════════════════════════════════ */
 function renderArtboardPanel() {
   const list = $("#artboardList");
@@ -936,11 +879,7 @@ function renderArtboardPanel() {
     sizeEl.className = "ab-size";
     sizeEl.textContent = `${n(ab.w)}×${n(ab.h)}`;
     li.append(nameEl, sizeEl);
-    li.addEventListener("click", () => {
-      state.doc.activeArtboard = ab.id;
-      pushHistory();
-      render();
-    });
+    li.addEventListener("click", () => { state.doc.activeArtboard = ab.id; pushHistory(); render(); });
     li.addEventListener("dblclick", () => {
       const nn = prompt("工作區域名稱", ab.name);
       if (nn && nn.trim()) { ab.name = nn.trim(); pushHistory(); render(); }
@@ -950,11 +889,7 @@ function renderArtboardPanel() {
 }
 $("#btnNewArtboard").addEventListener("click", () => {
   const ab = getActiveArtboard();
-  const newAb = makeArtboard(
-    "工作區域 " + (state.doc.artboards.length + 1),
-    ab ? ab.x + ab.w + 20 : 0, ab ? ab.y : 0,
-    ab ? ab.w : 210, ab ? ab.h : 297
-  );
+  const newAb = makeArtboard("工作區域 " + (state.doc.artboards.length + 1), ab ? ab.x + ab.w + 20 : 0, ab ? ab.y : 0, ab ? ab.w : 210, ab ? ab.h : 297);
   state.doc.artboards.push(newAb);
   state.doc.activeArtboard = newAb.id;
   pushHistory();
@@ -966,20 +901,14 @@ $("#btnDelArtboard").addEventListener("click", () => {
   const idx = state.doc.artboards.findIndex(a => a.id === state.doc.activeArtboard);
   state.doc.artboards.splice(idx, 1);
   state.doc.activeArtboard = state.doc.artboards[Math.max(0, idx - 1)].id;
-  pushHistory();
-  render();
+  pushHistory(); render();
 });
 $("#btnClearGuides").addEventListener("click", () => {
   state.doc.guides.horizontal = [];
   state.doc.guides.vertical = [];
-  pushHistory();
-  render();
-  toast("已清除所有參考線");
+  pushHistory(); render(); toast("已清除所有參考線");
 });
 
-/* ══════════════════════════════════════════════════════════
-   圖層面板
-   ══════════════════════════════════════════════════════════ */
 const TYPE_ABBR = { rect: "矩", ellipse: "圓", line: "線", path: "路", text: "字", image: "圖" };
 function renderLayerPanel() {
   const list = $("#layerList");
@@ -1038,9 +967,6 @@ $("#layerList").addEventListener("click", e => {
   render();
 });
 
-/* ══════════════════════════════════════════════════════════
-   屬性面板
-   ══════════════════════════════════════════════════════════ */
 const P = {
   x: $("#pX"), y: $("#pY"), w: $("#pW"), h: $("#pH"), r: $("#pR"),
   fill: $("#pFill"), stroke: $("#pStroke"), strokeW: $("#pStrokeW"),
@@ -1067,8 +993,7 @@ function applyToSelection(fn) {
   const objs = selectedObjs().filter(o => !o.locked);
   if (!objs.length) return;
   for (const o of objs) fn(o);
-  pushHistory();
-  render();
+  pushHistory(); render();
 }
 function bindNum(el, fn) {
   el.addEventListener("change", () => {
@@ -1107,10 +1032,7 @@ function moveObjectBy(o, dx, dy) {
   }
 }
 function scaleObjectTo(o, snap, box) {
-  if (o.type === "rect" || o.type === "ellipse" || o.type === "image") {
-    o.x = box.x; o.y = box.y; o.w = box.w; o.h = box.h;
-    return;
-  }
+  if (o.type === "rect" || o.type === "ellipse" || o.type === "image") { o.x = box.x; o.y = box.y; o.w = box.w; o.h = box.h; return; }
   const sx = snap.w ? box.w / snap.w : 1;
   const sy = snap.h ? box.h / snap.h : 1;
   if (o.type === "line") {
@@ -1164,17 +1086,15 @@ function onPointerDown(e) {
       if (ab) {
         state.doc.activeArtboard = ab.id;
         drag = { mode: "ab-move", start: p, ab, snap: Object.assign({}, ab) };
-        render();
-        return;
+        render(); return;
       }
     }
     if (!e.target.closest("[data-id]")) {
       const newAb = makeArtboard("工作區域 " + (state.doc.artboards.length + 1), p.x, p.y, 210, 297);
       state.doc.artboards.push(newAb);
       state.doc.activeArtboard = newAb.id;
-      pushHistory();
-      render();
-      toast("已新增工作區域，可拖曳邊角調整大小");
+      pushHistory(); render();
+      toast("已新增工作區域");
     }
     return;
   }
@@ -1189,8 +1109,7 @@ function onPointerDown(e) {
         state.direct.anchorIndex = idx;
         if (hType) drag = { mode: "handle-drag", obj: o, idx, hType };
         else drag = { mode: "anchor-drag", obj: o, idx, start: p, snap: JSON.parse(JSON.stringify(o.points[idx])) };
-        render();
-        return;
+        render(); return;
       }
     }
     const objEl = e.target.closest("[data-id]");
@@ -1201,8 +1120,7 @@ function onPointerDown(e) {
         state.direct.anchorIndex = -1;
         state.selection.clear();
         state.selection.add(o.id);
-        render();
-        return;
+        render(); return;
       }
     }
     state.direct.objectId = null;
@@ -1229,8 +1147,7 @@ function onPointerDown(e) {
       }
       const objs = selectedObjs().filter(x => !x.locked);
       drag = { mode: "move", start: p, items: objs.map(x => ({ obj: x, snap: JSON.parse(JSON.stringify(x)) })) };
-      render();
-      return;
+      render(); return;
     }
     if (!e.shiftKey) state.selection.clear();
     drag = { mode: "marquee", start: p, cur: p };
@@ -1270,8 +1187,7 @@ function onPointerMove(e) {
       const a = drag.start, o = drag.obj;
       if (o.type === "line") { o.x1 = a.x; o.y1 = a.y; o.x2 = p.x; o.y2 = p.y; }
       else { o.x = Math.min(a.x, p.x); o.y = Math.min(a.y, p.y); o.w = Math.abs(p.x - a.x); o.h = Math.abs(p.y - a.y); }
-      updateBBox(o);
-      render();
+      updateBBox(o); render();
       break;
     }
     case "move": {
@@ -1315,17 +1231,13 @@ function onPointerMove(e) {
       pt.x = snap.x + dx; pt.y = snap.y + dy;
       if (pt.hIn) pt.hIn = { x: snap.hIn ? snap.hIn.x + dx : 0, y: snap.hIn ? snap.hIn.y + dy : 0 };
       if (pt.hOut) pt.hOut = { x: snap.hOut ? snap.hOut.x + dx : 0, y: snap.hOut ? snap.hOut.y + dy : 0 };
-      updateBBox(o);
-      render();
+      updateBBox(o); render();
       break;
     }
-    case "handle-drag": {
-      const o = drag.obj, idx = drag.idx, hType = drag.hType;
-      o.points[idx][hType] = { x: p.x, y: p.y };
-      updateBBox(o);
-      render();
+    case "handle-drag":
+      drag.obj.points[drag.idx][drag.hType] = { x: p.x, y: p.y };
+      updateBBox(drag.obj); render();
       break;
-    }
     case "ab-move": {
       const ab = drag.ab, snap = drag.snap;
       ab.x = snap.x + (p.x - drag.start.x);
@@ -1347,12 +1259,11 @@ function onPointerMove(e) {
       render();
       break;
     }
-    case "guide-drag": {
+    case "guide-drag":
       if (drag.guide && drag.axis === "h") drag.guide.y = p.y;
       else if (drag.guide && drag.axis === "v") drag.guide.x = p.x;
       render();
       break;
-    }
   }
 }
 
@@ -1398,7 +1309,7 @@ function onPointerUp() {
 }
 
 /* ══════════════════════════════════════════════════════════
-   鋼筆
+   鋼筆 / 文字
    ══════════════════════════════════════════════════════════ */
 function penDown(p) {
   if (!pen) {
@@ -1430,9 +1341,6 @@ function finishPen() {
 }
 function cancelPen() { pen = null; drag = null; render(); }
 
-/* ══════════════════════════════════════════════════════════
-   文字
-   ══════════════════════════════════════════════════════════ */
 function startTextEditor(p) {
   const r = viewport.getBoundingClientRect();
   const fs = state.style.fontSize * state.zoom;
@@ -1478,7 +1386,7 @@ function startTextEditor(p) {
 }
 
 /* ══════════════════════════════════════════════════════════
-   尺標拖曳參考線
+   尺標參考線
    ══════════════════════════════════════════════════════════ */
 rulerH.addEventListener("pointerdown", e => {
   const r = viewport.getBoundingClientRect();
@@ -1614,8 +1522,7 @@ function alignObjects(type) {
     else if (type === "vcenter") moveObjectBy(o, 0, (bbox.y + bbox.h / 2) - (o.y + o.h / 2));
     else if (type === "bottom") moveObjectBy(o, 0, (bbox.y + bbox.h) - (o.y + o.h));
   }
-  pushHistory();
-  render();
+  pushHistory(); render();
 }
 $$(".align-btn").forEach(b => b.addEventListener("click", () => alignObjects(b.dataset.align)));
 
@@ -1653,8 +1560,7 @@ function distributeObjects(dir) {
       objs.forEach((o, i) => moveObjectBy(o, 0, (firstC + step * i) - (o.y + o.h / 2)));
     }
   }
-  pushHistory();
-  render();
+  pushHistory(); render();
 }
 $$(".dist-btn").forEach(b => b.addEventListener("click", () => distributeObjects(b.dataset.dist)));
 
@@ -1666,8 +1572,7 @@ $("#btnApplyGap").addEventListener("click", () => {
   objs.sort((a, b) => a.x - b.x);
   let cursor = objs[0].x;
   for (const o of objs) { moveObjectBy(o, cursor - o.x, 0); cursor += o.w + gap; }
-  pushHistory();
-  render();
+  pushHistory(); render();
   toast("已套用水平均分間距");
 });
 
@@ -1698,7 +1603,7 @@ function uniteSelection() {
 
   for (const o of objs) {
     try { renderObjectToCanvas(ctx, o, x0, y0, scale); }
-    catch (err) { console.error("render failed", o, err); }
+    catch (err) { console.error(err); }
   }
 
   const imgData = ctx.getImageData(0, 0, pw, ph);
@@ -1709,7 +1614,7 @@ function uniteSelection() {
   }
 
   const contours = marchingSquares(binary, pw, ph);
-  if (!contours.length) { toast("無法合併，請檢查物件"); return; }
+  if (!contours.length) { toast("無法合併"); return; }
   const simplified = contours.map(c => douglasPeucker(c, Math.max(0.6, 1 / scale)));
 
   let d = "";
@@ -1717,8 +1622,7 @@ function uniteSelection() {
     if (contour.length < 3) continue;
     for (let i = 0; i < contour.length; i++) {
       const [px_, py_] = contour[i];
-      const mx = px_ / scale + x0;
-      const my = py_ / scale + y0;
+      const mx = px_ / scale + x0, my = py_ / scale + y0;
       if (i === 0) d += `M ${n(mx)} ${n(my)} `;
       else d += `L ${n(mx)} ${n(my)} `;
     }
@@ -1741,8 +1645,7 @@ function uniteSelection() {
   state.doc.objects.push(united);
   state.selection.clear();
   state.selection.add(united.id);
-  pushHistory();
-  render();
+  pushHistory(); render();
   toast(`已聯集 ${objs.length} 個物件`);
 }
 
@@ -1762,8 +1665,7 @@ function renderObjectToCanvas(ctx, o, ox, oy, scale) {
       break;
     case "ellipse":
       ctx.beginPath();
-      ctx.ellipse((o.x + o.w / 2 - ox) * scale, (o.y + o.h / 2 - oy) * scale,
-        Math.max(o.w / 2 * scale, 0.1), Math.max(o.h / 2 * scale, 0.1), 0, 0, Math.PI * 2);
+      ctx.ellipse((o.x + o.w / 2 - ox) * scale, (o.y + o.h / 2 - oy) * scale, Math.max(o.w / 2 * scale, 0.1), Math.max(o.h / 2 * scale, 0.1), 0, 0, Math.PI * 2);
       ctx.fill();
       break;
     case "line": {
@@ -1774,31 +1676,26 @@ function renderObjectToCanvas(ctx, o, ox, oy, scale) {
       const len = Math.hypot(dx, dy) || 1;
       const nx = -dy / len * thick / 2, ny = dx / len * thick / 2;
       ctx.beginPath();
-      ctx.moveTo(x1 + nx, y1 + ny);
-      ctx.lineTo(x2 + nx, y2 + ny);
-      ctx.lineTo(x2 - nx, y2 - ny);
-      ctx.lineTo(x1 - nx, y1 - ny);
-      ctx.closePath();
-      ctx.fill();
+      ctx.moveTo(x1 + nx, y1 + ny); ctx.lineTo(x2 + nx, y2 + ny);
+      ctx.lineTo(x2 - nx, y2 - ny); ctx.lineTo(x1 - nx, y1 - ny);
+      ctx.closePath(); ctx.fill();
       break;
     }
     case "path": {
       ctx.save();
       ctx.translate(-ox * scale, -oy * scale);
       ctx.scale(scale, scale);
-      const p2d = new Path2D(pathToD(o.points, o.closed));
-      ctx.fill(p2d);
+      ctx.fill(new Path2D(pathToD(o.points, o.closed)));
       ctx.restore();
       break;
     }
-    case "text": {
+    case "text":
       ctx.save();
       ctx.font = `600 ${o.fontSize * scale}px sans-serif`;
       ctx.textBaseline = "alphabetic";
       ctx.fillText(o.text, (o.x - ox) * scale, (o.y + o.fontSize * 0.82 - oy) * scale);
       ctx.restore();
       break;
-    }
   }
   ctx.restore();
 }
@@ -1827,7 +1724,6 @@ function marchingSquares(binary, w, h) {
         case 12: segs.push([L, R]); break;
         case 13: segs.push([B, R]); break;
         case 14: segs.push([L, B]); break;
-        case 15: break;
       }
     }
   }
@@ -1889,7 +1785,7 @@ function parsePathDToPoints(d) {
 $("#pfUnite").addEventListener("click", uniteSelection);
 
 /* ══════════════════════════════════════════════════════════
-   填色/描邊色塊彈出
+   色塊彈出
    ══════════════════════════════════════════════════════════ */
 const SWATCH_COLORS = [
   "#000000","#404040","#808080","#BFBFBF","#FFFFFF","#E53935","#FB8C00",
@@ -1898,7 +1794,6 @@ const SWATCH_COLORS = [
 ];
 const swatchPopup = $("#swatchPopup");
 let swatchTarget = null;
-
 function openSwatchPopup(target, el) {
   swatchTarget = target;
   swatchPopup.innerHTML = "";
@@ -1912,7 +1807,8 @@ function openSwatchPopup(target, el) {
     grid.appendChild(item);
   }
   const none = document.createElement("div");
-  none.className = "swatch-item none"; none.title = "無";
+  none.className = "swatch-item none";
+  none.title = "無";
   none.addEventListener("click", () => applySwatch("none"));
   grid.appendChild(none);
   swatchPopup.appendChild(grid);
@@ -1966,7 +1862,7 @@ window.addEventListener("pointerdown", e => {
 });
 
 /* ══════════════════════════════════════════════════════════
-   圖層操作按鈕
+   圖層操作
    ══════════════════════════════════════════════════════════ */
 function moveLayer(dir) {
   const ids = Array.from(state.selection);
@@ -2050,13 +1946,7 @@ window.addEventListener("keydown", e => {
     case "p": case "P": setTool("pen"); break;
     case "t": case "T": setTool("text"); break;
     case "h": case "H": setTool("hand"); break;
-    case "x": case "X": {
-      const tmp = state.style.fill;
-      state.style.fill = state.style.stroke;
-      state.style.stroke = tmp;
-      updateSwatchUI();
-      break;
-    }
+    case "x": case "X": { const tmp = state.style.fill; state.style.fill = state.style.stroke; state.style.stroke = tmp; updateSwatchUI(); break; }
     case "Delete": case "Backspace": e.preventDefault(); deleteSelection(); break;
     case "Escape":
       if (pen) cancelPen();
@@ -2118,7 +2008,7 @@ function buildSVGString() {
 }
 
 /* ══════════════════════════════════════════════════════════
-   PDF 匯出（含圖像 XObject）
+   PDF 匯出
    ══════════════════════════════════════════════════════════ */
 function pdfColor(hex) { return hexToRgb(hex).map(v => v.toFixed(4)).join(" "); }
 function pdfPathCmds(o) {
@@ -2165,9 +2055,8 @@ function objectToPDF(o, pageHpt) {
     out.push("q");
     const tx = o.x * MM2PT;
     const ty = pageHpt - (o.y + o.fontSize * 0.82) * MM2PT;
-    const size = o.fontSize * MM2PT;
     out.push("BT");
-    out.push(`/F1 ${size.toFixed(3)} Tf`);
+    out.push(`/F1 ${(o.fontSize * MM2PT).toFixed(3)} Tf`);
     out.push(`${pdfColor(hasFill ? o.fill : "#000000")} rg`);
     out.push(`${tx.toFixed(3)} ${ty.toFixed(3)} Td`);
     out.push(`(${pdfEscapeString(o.text)}) Tj`);
@@ -2188,20 +2077,16 @@ function objectToPDF(o, pageHpt) {
   out.push("Q");
   return out.join("\n");
 }
-
 function buildPDFBlob() {
   const ab = getActiveArtboard();
   if (!ab) return null;
   const Wpt = ab.w * MM2PT, Hpt = ab.h * MM2PT;
-
   const contentParts = [];
   const imageAssets = [];
-
   for (const o of state.doc.objects) {
     if (!o.visible) continue;
     const clone = JSON.parse(JSON.stringify(o));
     moveObjectBy(clone, -ab.x, -ab.y);
-
     if (clone.type === 'image') {
       const parsed = parseDataURL(clone.src);
       if (!parsed) continue;
@@ -2210,21 +2095,16 @@ function buildPDFBlob() {
       imageAssets.push({ name, bytes: parsed.bytes, pxW: clone._pxW || 800, pxH: clone._pxH || 600 });
       const xPts = clone.x * MM2PT;
       const yPts = Hpt - (clone.y + clone.h) * MM2PT;
-      const wPts = clone.w * MM2PT;
-      const hPts = clone.h * MM2PT;
       contentParts.push('q');
-      contentParts.push(`${wPts.toFixed(3)} 0 0 ${hPts.toFixed(3)} ${xPts.toFixed(3)} ${yPts.toFixed(3)} cm`);
+      contentParts.push(`${(clone.w*MM2PT).toFixed(3)} 0 0 ${(clone.h*MM2PT).toFixed(3)} ${xPts.toFixed(3)} ${yPts.toFixed(3)} cm`);
       contentParts.push(`/${name} Do`);
       contentParts.push('Q');
       continue;
     }
-
     const s = objectToPDF(clone, Hpt);
     if (s) contentParts.push(s);
   }
-
   const contentStream = contentParts.join('\n');
-
   const objects = [];
   objects.push({ kind: 'str', data: '<< /Type /Catalog /Pages 2 0 R >>' });
   objects.push({ kind: 'str', data: '<< /Type /Pages /Kids [3 0 R] /Count 1 >>' });
@@ -2234,62 +2114,35 @@ function buildPDFBlob() {
   objects.push({ kind: 'stream', dict: `<< /Length ${contentStream.length} >>`, data: contentStream });
   objects.push({ kind: 'str', data: '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>' });
   for (const im of imageAssets) {
-    objects.push({
-      kind: 'imgstream',
-      dict: `<< /Type /XObject /Subtype /Image /Width ${im.pxW} /Height ${im.pxH} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${im.bytes.length} >>`,
-      bytes: im.bytes
-    });
+    objects.push({ kind: 'imgstream', dict: `<< /Type /XObject /Subtype /Image /Width ${im.pxW} /Height ${im.pxH} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${im.bytes.length} >>`, bytes: im.bytes });
   }
 
-  const chunks = [];
-  let offset = 0;
-  const enc = s => {
-    const a = new Uint8Array(s.length);
-    for (let i = 0; i < s.length; i++) a[i] = s.charCodeAt(i) & 0xFF;
-    return a;
-  };
-  const push = x => {
-    const arr = typeof x === 'string' ? enc(x) : x;
-    chunks.push(arr);
-    offset += arr.length;
-  };
-
+  const chunks = []; let offset = 0;
+  const enc = s => { const a = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) a[i] = s.charCodeAt(i) & 0xFF; return a; };
+  const push = x => { const arr = typeof x === 'string' ? enc(x) : x; chunks.push(arr); offset += arr.length; };
   push('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
-
   const offsets = [];
   for (let i = 0; i < objects.length; i++) {
     offsets.push(offset);
     const obj = objects[i];
     const idStr = `${i + 1} 0 obj\n`;
-    if (obj.kind === 'str') {
-      push(idStr + obj.data + '\nendobj\n');
-    } else if (obj.kind === 'stream') {
-      push(idStr + obj.dict + '\nstream\n');
-      push(obj.data);
-      push('\nendstream\nendobj\n');
-    } else if (obj.kind === 'imgstream') {
-      push(idStr + obj.dict + '\nstream\n');
-      push(obj.bytes);
-      push('\nendstream\nendobj\n');
-    }
+    if (obj.kind === 'str') push(idStr + obj.data + '\nendobj\n');
+    else if (obj.kind === 'stream') { push(idStr + obj.dict + '\nstream\n'); push(obj.data); push('\nendstream\nendobj\n'); }
+    else if (obj.kind === 'imgstream') { push(idStr + obj.dict + '\nstream\n'); push(obj.bytes); push('\nendstream\nendobj\n'); }
   }
-
   const xrefOffset = offset;
   let xref = `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
   for (const off of offsets) xref += String(off).padStart(10, '0') + ' 00000 n \n';
   xref += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
   push(xref);
-
-  let total = 0;
-  for (const c of chunks) total += c.length;
-  const out = new Uint8Array(total);
-  let pos = 0;
+  let total = 0; for (const c of chunks) total += c.length;
+  const out = new Uint8Array(total); let pos = 0;
   for (const c of chunks) { out.set(c, pos); pos += c.length; }
   return new Blob([out], { type: 'application/pdf' });
 }
 
 /* ══════════════════════════════════════════════════════════
-   PDF 導入
+   PDF 解析（pdf.js 載入）
    ══════════════════════════════════════════════════════════ */
 let pdfjsLoading = null;
 function loadPdfJS() {
@@ -2300,10 +2153,7 @@ function loadPdfJS() {
     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
     script.onload = () => {
       if (window.pdfjsLib) {
-        try {
-          window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        } catch (e) {}
+        try { window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; } catch (e) {}
         resolve(window.pdfjsLib);
       } else reject(new Error('pdf.js 載入失敗'));
     };
@@ -2313,50 +2163,254 @@ function loadPdfJS() {
   return pdfjsLoading;
 }
 
+/* ══════════════════════════════════════════════════════════
+   PDF 矢量提取核心
+   ══════════════════════════════════════════════════════════ */
+function splitPathD(d) {
+  const tokens = d.match(/[A-Za-z]|-?\d*\.?\d+/g) || [];
+  const subpaths = [];
+  let cur = null;
+  let i = 0;
+  let cx = 0, cy = 0, sx = 0, sy = 0;
+  while (i < tokens.length) {
+    const t = tokens[i].toUpperCase();
+    if (t === 'M') {
+      if (cur && cur.points.length >= 2) subpaths.push(cur);
+      const x = parseFloat(tokens[i + 1]);
+      const y = parseFloat(tokens[i + 2]);
+      cur = { points: [{ x, y, hIn: null, hOut: null }], closed: false };
+      cx = x; cy = y; sx = x; sy = y;
+      i += 3;
+    } else if (t === 'L') {
+      const x = parseFloat(tokens[i + 1]);
+      const y = parseFloat(tokens[i + 2]);
+      if (cur) cur.points.push({ x, y, hIn: null, hOut: null });
+      cx = x; cy = y;
+      i += 3;
+    } else if (t === 'C') {
+      const x1 = parseFloat(tokens[i + 1]), y1 = parseFloat(tokens[i + 2]);
+      const x2 = parseFloat(tokens[i + 3]), y2 = parseFloat(tokens[i + 4]);
+      const x3 = parseFloat(tokens[i + 5]), y3 = parseFloat(tokens[i + 6]);
+      if (cur) {
+        cur.points[cur.points.length - 1].hOut = { x: x1, y: y1 };
+        cur.points.push({ x: x3, y: y3, hIn: { x: x2, y: y2 }, hOut: null });
+      }
+      cx = x3; cy = y3;
+      i += 7;
+    } else if (t === 'Q') {
+      const x1 = parseFloat(tokens[i + 1]), y1 = parseFloat(tokens[i + 2]);
+      const x2 = parseFloat(tokens[i + 3]), y2 = parseFloat(tokens[i + 4]);
+      if (cur) {
+        const c1x = cx + 2 / 3 * (x1 - cx), c1y = cy + 2 / 3 * (y1 - cy);
+        const c2x = x2 + 2 / 3 * (x1 - x2), c2y = y2 + 2 / 3 * (y1 - y2);
+        cur.points[cur.points.length - 1].hOut = { x: c1x, y: c1y };
+        cur.points.push({ x: x2, y: y2, hIn: { x: c2x, y: c2y }, hOut: null });
+      }
+      cx = x2; cy = y2;
+      i += 5;
+    } else if (t === 'Z') {
+      if (cur) {
+        cur.closed = true;
+        if (cur.points.length > 1) {
+          const first = cur.points[0], last = cur.points[cur.points.length - 1];
+          if (Math.abs(first.x - last.x) < 0.01 && Math.abs(first.y - last.y) < 0.01) {
+            first.hIn = last.hIn;
+            cur.points.pop();
+          }
+        }
+      }
+      cx = sx; cy = sy;
+      i++;
+    } else {
+      i++;
+    }
+  }
+  if (cur && cur.points.length >= 2) subpaths.push(cur);
+  return subpaths.filter(sp => sp.points.length >= 2);
+}
+
+async function extractVectorPage(page) {
+  const pdfjsLib = window.pdfjsLib;
+  const OPS = pdfjsLib.OPS;
+  const viewport = page.getViewport({ scale: 1 });
+  const vpMat = viewport.transform;
+  const PT2MM = 25.4 / 72;
+  const pageW = viewport.width * PT2MM;
+  const pageH = viewport.height * PT2MM;
+
+  const opList = await page.getOperatorList();
+  const objects = [];
+
+  let ctm = [1, 0, 0, 1, 0, 0];
+  const stack = [];
+  let fill = '#000000', stroke = '#000000';
+  let lineWidth = 1;
+  let pendingD = null;
+
+  const matMul = (m1, m2) => [
+    m1[0]*m2[0] + m1[2]*m2[1], m1[1]*m2[0] + m1[3]*m2[1],
+    m1[0]*m2[2] + m1[2]*m2[3], m1[1]*m2[2] + m1[3]*m2[3],
+    m1[0]*m2[4] + m1[2]*m2[5] + m1[4], m1[1]*m2[4] + m1[3]*m2[5] + m1[5]
+  ];
+  const applyCTM = (x, y) => [ctm[0]*x + ctm[2]*y + ctm[4], ctm[1]*x + ctm[3]*y + ctm[5]];
+  const toMM = (x, y) => {
+    const dx = vpMat[0]*x + vpMat[2]*y + vpMat[4];
+    const dy = vpMat[1]*x + vpMat[3]*y + vpMat[5];
+    return [dx * PT2MM, dy * PT2MM];
+  };
+  const rgbHex = (r, g, b) => {
+    const c = v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0');
+    return '#' + c(r) + c(g) + c(b);
+  };
+
+  function buildPathD(ops, args, minMax) {
+    const [minX, minY, maxX, maxY] = minMax;
+    const sxx = (maxX - minX) || 1;
+    const syy = (maxY - minY) || 1;
+    let d = '';
+    let i = 0, j = 0;
+    while (i < ops.length) {
+      const op = ops[i++];
+      if (op === 0) {
+        const x = minX + args[j++] * sxx, y = minY + args[j++] * syy;
+        const [ux, uy] = toMM(...applyCTM(x, y));
+        d += `M ${n(ux)} ${n(uy)} `;
+      } else if (op === 1) {
+        const x = minX + args[j++] * sxx, y = minY + args[j++] * syy;
+        const [ux, uy] = toMM(...applyCTM(x, y));
+        d += `L ${n(ux)} ${n(uy)} `;
+      } else if (op === 2) {
+        const ax = minX + args[j++] * sxx, ay = minY + args[j++] * syy;
+        const bx = minX + args[j++] * sxx, by = minY + args[j++] * syy;
+        const cx = minX + args[j++] * sxx, cy = minY + args[j++] * syy;
+        const [u1, v1] = toMM(...applyCTM(ax, ay));
+        const [u2, v2] = toMM(...applyCTM(bx, by));
+        const [u3, v3] = toMM(...applyCTM(cx, cy));
+        d += `C ${n(u1)} ${n(v1)} ${n(u2)} ${n(v2)} ${n(u3)} ${n(v3)} `;
+      } else if (op === 3) {
+        const ax = minX + args[j++] * sxx, ay = minY + args[j++] * syy;
+        const bx = minX + args[j++] * sxx, by = minY + args[j++] * syy;
+        const [u1, v1] = toMM(...applyCTM(ax, ay));
+        const [u2, v2] = toMM(...applyCTM(bx, by));
+        d += `Q ${n(u1)} ${n(v1)} ${n(u2)} ${n(v2)} `;
+      } else if (op === 4) {
+        d += 'Z ';
+      } else if (op === 5) {
+        const rx = minX + args[j++] * sxx, ry = minY + args[j++] * syy;
+        const rw = args[j++] * sxx, rh = args[j++] * syy;
+        const [u1, v1] = toMM(...applyCTM(rx, ry));
+        const [u2, v2] = toMM(...applyCTM(rx + rw, ry + rh));
+        d += `M ${n(u1)} ${n(v1)} L ${n(u2)} ${n(v1)} L ${n(u2)} ${n(v2)} L ${n(u1)} ${n(v2)} Z `;
+      }
+    }
+    return d.trim();
+  }
+
+  function flushPath(fillOn, strokeOn) {
+    if (!pendingD) return;
+    const d = pendingD;
+    pendingD = null;
+    try {
+      const subs = splitPathD(d);
+      for (const sp of subs) {
+        objects.push({
+          type: 'path',
+          points: sp.points,
+          closed: sp.closed,
+          fill: fillOn ? fill : 'none',
+          stroke: strokeOn ? stroke : 'none',
+          strokeWidth: strokeOn ? Math.max(lineWidth * PT2MM, 0.05) : 0
+        });
+      }
+    } catch (e) { console.warn('path parse failed', e); }
+  }
+
+  for (let i = 0; i < opList.fnArray.length; i++) {
+    const fn = opList.fnArray[i];
+    const args = opList.argsArray[i];
+    switch (fn) {
+      case OPS.save: stack.push(ctm.slice()); break;
+      case OPS.restore: { const s = stack.pop(); if (s) ctm = s; break; }
+      case OPS.transform: ctm = matMul(ctm, args); break;
+      case OPS.setFillRGBColor: fill = rgbHex(args[0], args[1], args[2]); break;
+      case OPS.setStrokeRGBColor: stroke = rgbHex(args[0], args[1], args[2]); break;
+      case OPS.setFillGray: { const v = args[0] * 255; fill = rgbHex(v, v, v); break; }
+      case OPS.setStrokeGray: { const v = args[0] * 255; stroke = rgbHex(v, v, v); break; }
+      case OPS.setFillCMYKColor: { const [c, m, y, k] = args; fill = rgbHex(255*(1-c)*(1-k), 255*(1-m)*(1-k), 255*(1-y)*(1-k)); break; }
+      case OPS.setStrokeCMYKColor: { const [c, m, y, k] = args; stroke = rgbHex(255*(1-c)*(1-k), 255*(1-m)*(1-k), 255*(1-y)*(1-k)); break; }
+      case OPS.setLineWidth: lineWidth = args[0]; break;
+      case OPS.constructPath: pendingD = buildPathD(args[0], args[1], args[2]); break;
+      case OPS.fill: case OPS.eoFill: case OPS.closeFill: flushPath(true, false); break;
+      case OPS.stroke: case OPS.closeStroke: flushPath(false, true); break;
+      case OPS.fillStroke: case OPS.eoFillStroke: case OPS.closeFillStroke: flushPath(true, true); break;
+      case OPS.endPath: pendingD = null; break;
+    }
+  }
+
+  // 文字
+  try {
+    const textContent = await page.getTextContent();
+    for (const item of textContent.items) {
+      if (!item.str || !item.str.trim()) continue;
+      const [a, b, c, d, e, f] = item.transform;
+      const fontSizePt = Math.hypot(b, d) || item.height || 12;
+      const fontSizeMM = fontSizePt * PT2MM;
+      const [mx, my] = toMM(e, f);
+      const angle = Math.atan2(b, a) * 180 / Math.PI;
+      objects.push({
+        type: 'text',
+        text: item.str,
+        x: mx,
+        y: my - fontSizeMM * 0.82,
+        fontSize: fontSizeMM,
+        fontFamily: 'sans-serif',
+        fill: '#000000',
+        stroke: 'none',
+        strokeWidth: 0,
+        rotation: angle
+      });
+    }
+  } catch (e) { console.warn('text extract failed', e); }
+
+  return { objects, width: pageW, height: pageH };
+}
+
+/* ══════════════════════════════════════════════════════════
+   PDF 導入流程
+   ══════════════════════════════════════════════════════════ */
 let isImporting = false;
 const importOverlay = $("#importOverlay");
 const importSub = $("#importSub");
 const importBar = $("#importBar");
 const importStatus = $("#importStatus");
+const pdfModeOverlay = $("#pdfModeOverlay");
+let pendingPdfFile = null;
 
-async function importPDFFile(file) {
-  if (isImporting) { toast('請等待目前導入完成'); return; }
-  isImporting = true;
+function showImportProgress(title) {
   importOverlay.classList.add("open");
-  importSub.textContent = "正在載入 PDF 解析庫...";
+  importSub.textContent = title || "正在載入...";
   importBar.style.width = "0%";
   importStatus.textContent = "";
+}
+function hideImportProgress() {
+  importOverlay.classList.remove("open");
+}
 
+async function importPDFAsImages(file, pdfjsLib) {
   let imported = 0, total = 0;
   try {
-    let pdfjsLib;
-    try {
-      pdfjsLib = await loadPdfJS();
-    } catch (err) {
-      importSub.textContent = err.message;
-      toast(err.message);
-      return;
-    }
+    importSub.textContent = "正在解析 PDF 檔案...";
+    const ab = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
+    total = pdf.numPages;
 
-    let pdf;
-    try {
-      importSub.textContent = "正在解析 PDF 檔案...";
-      const ab = await file.arrayBuffer();
-      pdf = await pdfjsLib.getDocument({ data: ab }).promise;
-      total = pdf.numPages;
-    } catch (err) {
-      importSub.textContent = "PDF 解析失敗：" + (err.message || err);
-      toast("PDF 解析失敗：" + (err.message || err));
-      return;
-    }
-
-    importSub.textContent = `PDF 共 ${total} 頁，開始渲染...`;
+    importSub.textContent = `共 ${total} 頁，開始渲染...`;
     const DPI = 200;
 
     for (let i = 1; i <= total; i++) {
       importStatus.textContent = `${i} / ${total}`;
       importBar.style.width = ((i - 1) / total * 100) + "%";
-      await new Promise(r => setTimeout(r, 20));
+      await new Promise(r => setTimeout(r, 15));
 
       try {
         const page = await pdf.getPage(i);
@@ -2375,61 +2429,162 @@ async function importPDFFile(file) {
         const ctx = cv.getContext('2d');
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, cv.width, cv.height);
-
         await page.render({ canvasContext: ctx, viewport: vp }).promise;
 
         const jpeg = cv.toDataURL('image/jpeg', 0.88);
 
-        // 建立獨立工作區域
         const prevAb = state.doc.artboards[state.doc.artboards.length - 1];
         const abX = prevAb ? prevAb.x + prevAb.w + 20 : 0;
-        const ab = makeArtboard(`PDF 第 ${i} 頁`, abX, 0, wMM, hMM);
-        state.doc.artboards.push(ab);
-        state.doc.activeArtboard = ab.id;
+        const newAb = makeArtboard(`PDF 第 ${i} 頁`, abX, 0, wMM, hMM);
+        state.doc.artboards.push(newAb);
+        state.doc.activeArtboard = newAb.id;
 
-        // 放置圖像物件覆蓋整個工作區域
         const obj = baseObj('image', `PDF 第 ${i} 頁`);
         Object.assign(obj, {
-          x: ab.x, y: ab.y, w: wMM, h: hMM,
+          x: newAb.x, y: newAb.y, w: wMM, h: hMM,
           src: jpeg, _pxW: cv.width, _pxH: cv.height,
           fill: 'none', stroke: 'none', strokeWidth: 0
         });
         state.doc.objects.push(obj);
         imageCache.set(obj.id, { src: jpeg, pxW: cv.width, pxH: cv.height });
         imported++;
+      } catch (err) { console.error('頁面 ' + i + ' 失敗', err); }
+    }
+
+    importBar.style.width = "100%";
+    importStatus.textContent = `完成 ${imported} / ${total}`;
+    importSub.textContent = "導入完成。";
+    if (imported > 0) { pushHistory(); fitToScreen(); toast(`PDF 圖片導入完成：${imported} 頁`); }
+    await new Promise(r => setTimeout(r, 500));
+  } finally {
+    hideImportProgress();
+  }
+}
+
+async function importPDFAsVector(file, pdfjsLib) {
+  let imported = 0, total = 0;
+  let totalPaths = 0, totalTexts = 0;
+  try {
+    importSub.textContent = "正在解析 PDF 檔案...";
+    const ab = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
+    total = pdf.numPages;
+
+    importSub.textContent = `共 ${total} 頁，開始提取矢量內容...`;
+
+    for (let i = 1; i <= total; i++) {
+      importStatus.textContent = `${i} / ${total}`;
+      importBar.style.width = ((i - 1) / total * 100) + "%";
+      await new Promise(r => setTimeout(r, 15));
+
+      try {
+        const page = await pdf.getPage(i);
+        const { objects, width, height } = await extractVectorPage(page);
+
+        if (!objects.length) {
+          console.warn('第 ' + i + ' 頁沒有提取到內容');
+          continue;
+        }
+
+        const prevAb = state.doc.artboards[state.doc.artboards.length - 1];
+        const abX = prevAb ? prevAb.x + prevAb.w + 20 : 0;
+        const newAb = makeArtboard(`PDF 第 ${i} 頁（矢量）`, abX, 0, width, height);
+        state.doc.artboards.push(newAb);
+        state.doc.activeArtboard = newAb.id;
+
+        for (const o of objects) {
+          if (o.type === 'path') {
+            const obj = baseObj('path', '路徑');
+            obj.points = o.points;
+            obj.closed = o.closed;
+            obj.fill = o.fill;
+            obj.stroke = o.stroke;
+            obj.strokeWidth = o.strokeWidth;
+            moveObjectBy(obj, newAb.x, newAb.y);
+            updateBBox(obj);
+            state.doc.objects.push(obj);
+            totalPaths++;
+          } else if (o.type === 'text') {
+            const obj = baseObj('text', o.text.slice(0, 14));
+            obj.text = o.text;
+            obj.x = o.x + newAb.x;
+            obj.y = o.y + newAb.y;
+            obj.fontSize = o.fontSize;
+            obj.fontFamily = 'sans-serif';
+            obj.fill = o.fill;
+            obj.stroke = 'none';
+            obj.strokeWidth = 0;
+            obj.rotation = o.rotation;
+            updateBBox(obj);
+            state.doc.objects.push(obj);
+            totalTexts++;
+          }
+        }
+        imported++;
       } catch (err) {
-        console.error('頁面 ' + i + ' 渲染失敗', err);
+        console.error('頁面 ' + i + ' 矢量提取失敗', err);
       }
     }
 
     importBar.style.width = "100%";
     importStatus.textContent = `完成 ${imported} / ${total}`;
-    importSub.textContent = "導入完成！可直接在上方繪製或修改。";
-
+    importSub.textContent = `路徑 ${totalPaths} 個、文字 ${totalTexts} 個`;
     if (imported > 0) {
       pushHistory();
       fitToScreen();
-      toast(`PDF 導入完成：${imported} 頁`);
+      toast(`矢量導入完成：${imported} 頁 / 路徑 ${totalPaths} / 文字 ${totalTexts}`);
     } else {
-      toast("PDF 導入失敗，請檢查檔案是否有效");
+      toast("未提取到矢量內容，建議改用圖片導入");
     }
-
-    await new Promise(r => setTimeout(r, 600));
+    await new Promise(r => setTimeout(r, 700));
   } finally {
-    isImporting = false;
-    importOverlay.classList.remove("open");
+    hideImportProgress();
   }
 }
 
-$("#pdfFileInput").addEventListener("change", async e => {
+async function runImport(file, mode) {
+  if (isImporting) { toast('請等待目前導入完成'); return; }
+  isImporting = true;
+  showImportProgress("正在載入 PDF 解析庫...");
+  let pdfjsLib;
+  try {
+    try { pdfjsLib = await loadPdfJS(); }
+    catch (err) {
+      importSub.textContent = err.message;
+      toast(err.message);
+      return;
+    }
+    if (mode === 'vector') await importPDFAsVector(file, pdfjsLib);
+    else await importPDFAsImages(file, pdfjsLib);
+  } finally {
+    isImporting = false;
+    hideImportProgress();
+  }
+}
+
+$("#pdfModeVector").addEventListener("click", () => {
+  pdfModeOverlay.classList.remove("open");
+  if (pendingPdfFile) { const f = pendingPdfFile; pendingPdfFile = null; runImport(f, 'vector'); }
+});
+$("#pdfModeImage").addEventListener("click", () => {
+  pdfModeOverlay.classList.remove("open");
+  if (pendingPdfFile) { const f = pendingPdfFile; pendingPdfFile = null; runImport(f, 'image'); }
+});
+$("#pdfModeCancel").addEventListener("click", () => {
+  pdfModeOverlay.classList.remove("open");
+  pendingPdfFile = null;
+});
+
+$("#pdfFileInput").addEventListener("change", e => {
   const f = e.target.files[0];
   if (!f) return;
   e.target.value = '';
-  await importPDFFile(f);
+  pendingPdfFile = f;
+  pdfModeOverlay.classList.add("open");
 });
 
 /* ══════════════════════════════════════════════════════════
-   下載
+   下載 & 頂列
    ══════════════════════════════════════════════════════════ */
 function download(blobOrString, filename, mime) {
   const blob = blobOrString instanceof Blob ? blobOrString : new Blob([blobOrString], { type: mime });
@@ -2461,39 +2616,26 @@ $$("[data-act]").forEach(btn => {
       toast("已建立新畫板");
       return;
     }
-    if (act === "import-pdf") {
-      $("#pdfFileInput").click();
-      return;
-    }
-    if (act === "svg") {
-      download(buildSVGString(), safeName() + ".svg", "image/svg+xml;charset=utf-8");
-      toast("SVG 已匯出（含圖像）");
-      return;
-    }
+    if (act === "import-pdf") { $("#pdfFileInput").click(); return; }
+    if (act === "svg") { download(buildSVGString(), safeName() + ".svg", "image/svg+xml;charset=utf-8"); toast("SVG 已匯出"); return; }
     if (act === "pdf") {
       const hasCJK = state.doc.objects.some(o => o.type === "text" && /[^\x00-\x7F]/.test(o.text || ""));
       if (hasCJK && !confirm("PDF 匯出使用標準 Helvetica 字型，中文字元將以 ? 呈現。\n若需完整中文，請改用「匯出 SVG」。\n\n仍要繼續嗎？")) return;
       const blob = buildPDFBlob();
-      if (blob) {
-        download(blob, safeName() + ".pdf", "application/pdf");
-        toast("PDF 已匯出（含圖像）");
-      }
+      if (blob) { download(blob, safeName() + ".pdf", "application/pdf"); toast("PDF 已匯出"); }
       return;
     }
   });
 });
 
 /* ══════════════════════════════════════════════════════════
-   面板收合
+   面板收合 & 初始化
    ══════════════════════════════════════════════════════════ */
 $$(".section").forEach(sec => {
   const head = sec.querySelector(".section-head");
   if (head) head.addEventListener("click", () => sec.classList.toggle("collapsed"));
 });
 
-/* ══════════════════════════════════════════════════════════
-   初始化
-   ══════════════════════════════════════════════════════════ */
 window.addEventListener("resize", () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => render(), 80);
@@ -2507,7 +2649,7 @@ function init() {
   pushHistory();
   fitToScreen();
   setTimeout(() => {
-    if (state.doc.objects.length === 0) toast("提示：可點「＋ 導入 PDF」上傳 PDF 檔案；按 R 畫矩形、P 用鋼筆、A 編輯錨點");
+    if (state.doc.objects.length === 0) toast("提示：點「＋ 導入 PDF」可選擇矢量或圖片導入");
   }, 800);
 }
 
